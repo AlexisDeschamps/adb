@@ -43,6 +43,8 @@ type Supporter struct {
 
 	Notes string `db:"notes"`
 
+	RequiresFollowup bool `db:"requires_followup"`
+
 	// Canvasser string `db:"canvasser"`
 	// CanvassLeader string `db:"canvass_leader"`
 }
@@ -80,6 +82,9 @@ type SupporterJSON struct {
 	InterestHostEvent   bool `json:"interest_host_event"`
 
 	Notes string `json:"notes"`
+
+	RequiresFollowup bool `json:"requires_followup"`
+
 	// Canvasser string `json:"canvasser"`
 	// CanvassLeader string `json:"canvass_leader"`
 }
@@ -121,6 +126,7 @@ func CleanSupporterData(body io.Reader) (Supporter, error) {
 		InterestVolunteer:         supporterJSON.InterestVolunteer,
 		InterestHostEvent:         supporterJSON.InterestHostEvent,
 		Notes:                     strings.TrimSpace(supporterJSON.Notes),
+		RequiresFollowup:          supporterJSON.RequiresFollowup,
 	}
 	return supporter, nil
 }
@@ -162,7 +168,8 @@ INSERT INTO supporters (
   interest_attend_event,
   interest_volunteer,
   interest_host_event,
-  notes
+  notes,
+  requires_followup
 ) VALUES (
 
   :first_name,
@@ -192,7 +199,8 @@ INSERT INTO supporters (
   :interest_attend_event,
   :interest_volunteer,
   :interest_host_event,
-  :notes
+  :notes,
+  :requires_followup
 
 )
 `, supporter)

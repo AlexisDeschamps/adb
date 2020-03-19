@@ -87,6 +87,10 @@
         <br />
       </div>
 
+      <input type="checkbox" id="requiresFollowup" v-model="requiresFollowup" />
+      <label for="requiresFollowup"> Requires Followup (for something not covered by another option) </label> <br />
+
+      <br />
       <label for="notes"> Notes </label>
       <textarea id="notes" type="text" class="form-control" v-model="notes" /> <br />
 
@@ -171,6 +175,8 @@ export default Vue.extend({
       interestVolunteer: false,
       interestHostEvent: false,
 
+      requiresFollowup: false,
+
       notes: '',
 
       // canvasser: 'Samer Masterson',
@@ -226,6 +232,7 @@ export default Vue.extend({
           interest_attend_event: this.interestAttendEvent,
           interest_volunteer: this.interestVolunteer,
           interest_host_event: this.interestHostEvent,
+          requires_followup: this.requiresFollowup,
           notes: this.notes.trim(),
           // canvasser: this.canvasser,
           // canvass_leader: this.canvassLeader,

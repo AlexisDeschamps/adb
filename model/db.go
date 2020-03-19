@@ -246,7 +246,9 @@ CREATE TABLE supporters (
   interest_volunteer TINYINT(1) NOT NULL,
   interest_host_event TINYINT(1) NOT NULL,
 
-  notes TEXT NOT NULL
+  notes TEXT NOT NULL,
+
+  requires_followup TINYINT(1) NOT NULL DEFAULT '0'
 
   -- canvasser_user_id INTEGER NOT NULL,
   -- canvass_leader_user_id INTEGER NOT NULL
