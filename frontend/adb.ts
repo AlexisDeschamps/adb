@@ -5,6 +5,7 @@ import EventEdit from './EventEdit.vue';
 import EventList from './EventList.vue';
 import UserList from './UserList.vue';
 import WorkingGroupList from './WorkingGroupList.vue';
+import CanvassingForm from './CanvassingForm.vue';
 
 new Vue({
   el: '#app',
@@ -15,5 +16,6 @@ new Vue({
     EventList,
     UserList,
     WorkingGroupList,
+    CanvassingForm,
   },
 });

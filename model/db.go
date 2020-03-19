@@ -29,6 +29,7 @@ func WipeDatabase(db *sqlx.DB) {
 	db.MustExec(`DROP TABLE IF EXISTS working_group_members`)
 	db.MustExec(`DROP TABLE IF EXISTS circles`)
 	db.MustExec(`DROP TABLE IF EXISTS circle_members`)
+	db.MustExec(`DROP TABLE IF EXISTS supporters`)
 
 	db.MustExec(`
 CREATE TABLE activists (
@@ -203,6 +204,53 @@ CREATE TABLE users_roles (
     REFERENCES adb_users (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+`)
+
+	db.MustExec(`
+CREATE TABLE supporters (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  first_name VARCHAR(80) NOT NULL DEFAULT '',
+  last_name VARCHAR(80) NOT NULL DEFAULT '',
+  email VARCHAR(80) NOT NULL DEFAULT '',
+  phone VARCHAR(20) NOT NULL DEFAULT '',
+
+  location_address1 VARCHAR(255) NOT NULL DEFAULT '',
+  location_address2 VARCHAR(255) NOT NULL DEFAULT '',
+  location_city VARCHAR(255) NOT NULL DEFAULT '',
+  location_state VARCHAR(20) NOT NULL DEFAULT '',
+  location_zip VARCHAR(20) NOT NULL DEFAULT '',
+
+  source VARCHAR(255) NOT NULL,
+  date_sourced DATE NOT NULL,
+
+  requested_lawn_sign TINYINT(1) NOT NULL,
+  sent_lawn_sign TINYINT(1) NOT NULL DEFAULT '0',
+
+  requested_poster TINYINT(1) NOT NULL,
+  sent_poster TINYINT(1) NOT NULL DEFAULT '0',
+
+  voter TINYINT(1) NOT NULL,
+
+  issue_housing TINYINT(1) NOT NULL,
+  issue_homelessness TINYINT(1) NOT NULL,
+  issue_climate TINYINT(1) NOT NULL,
+  issue_public_safety TINYINT(1) NOT NULL,
+  issue_police_accountability TINYINT(1) NOT NULL,
+  issue_transit TINYINT(1) NOT NULL,
+  issue_economic_equality TINYINT(1) NOT NULL,
+  issue_public_health TINYINT(1) NOT NULL,
+  issue_animal_rights TINYINT(1) NOT NULL,
+
+  interest_donate TINYINT(1) NOT NULL,
+  interest_attend_event TINYINT(1) NOT NULL,
+  interest_volunteer TINYINT(1) NOT NULL,
+  interest_host_event TINYINT(1) NOT NULL,
+
+  notes TEXT NOT NULL
+
+  -- canvasser_user_id INTEGER NOT NULL,
+  -- canvass_leader_user_id INTEGER NOT NULL
+)
 `)
 
 }
