@@ -152,6 +152,7 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/list_working_groups", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListWorkingGroupsHandler))
 	router.Handle("/list_circles", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListCirclesHandler))
 	router.Handle("/canvass_phone_banking_form", alice.New(main.authOrganizerMiddleware).ThenFunc(main.CanvassPhoneBankingFormHandler))
+	router.Handle("/list_supporters", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListSupportersHandler))
 
 	// Authed Admin pages
 	router.Handle("/admin/users", alice.New(main.authAdminMiddleware).ThenFunc(main.ListUsersHandler))
@@ -184,6 +185,7 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/circle/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupListHandler))
 	router.Handle("/circle/delete", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupDeleteHandler))
 	router.Handle("/canvass/supporter/save", alice.New(main.apiAttendanceAuthMiddleware).ThenFunc(main.CanvassSupporterSaveHandler))
+	router.Handle("/canvass/supporter/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterListHandler))
 
 	// Authed Admin API
 	router.Handle("/user/list", alice.New(main.apiAdminAuthMiddleware).ThenFunc(main.UserListHandler))
@@ -658,6 +660,17 @@ func sendErrorMessage(w io.Writer, err error) {
 func (c MainController) CanvassPhoneBankingFormHandler(w http.ResponseWriter, r *http.Request) {
 	renderPage(w, r, "canvassing_form", PageData{
 		PageName: "CanvassPhoneBankingForm",
+	})
+}
+
+func (c MainController) ListSupportersHandler(w http.ResponseWriter, r *http.Request) {
+	renderPage(w, r, "activist_list", PageData{
+		PageName: "SupportersList",
+		Data: ActivistListData{
+			Title:       "All Supporters",
+			Description: "Everyone who has been canvassed or signed up on the website. NOTE: Edit hasn't been implemented yet.",
+			View:        "all_supporters",
+		},
 	})
 }
 
@@ -1301,6 +1314,24 @@ func (c MainController) CanvassSupporterSaveHandler(w http.ResponseWriter, r *ht
 		"status": "success",
 	}
 	writeJSON(w, out)
+}
+
+func (c MainController) CanvassSupporterListHandler(w http.ResponseWriter, r *http.Request) {
+	options, err := model.CleanGetSupporterOptions(r.Body)
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+	supporters, err := model.GetSupportersJSON(c.db, options)
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+
+	writeJSON(w, map[string]interface{}{
+		"status":        "success",
+		"activist_list": supporters,
+	})
 }
 
 func main() {

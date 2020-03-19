@@ -89,6 +89,19 @@ type SupporterJSON struct {
 	// CanvassLeader string `json:"canvass_leader"`
 }
 
+type GetSupporterOptions struct {
+	ID         int    `json:"id"`
+	Order      int    `json:"order"`
+	OrderField string `json:"order_field"`
+	Filter     string `json:"filter"`
+}
+
+var validSupporterOrderFields = map[string]struct{}{
+	"first_name": struct{}{},
+	"email":      struct{}{},
+	"phone":      struct{}{},
+}
+
 func CleanSupporterData(body io.Reader) (Supporter, error) {
 	var supporterJSON SupporterJSON
 	err := json.NewDecoder(body).Decode(&supporterJSON)
@@ -212,4 +225,164 @@ INSERT INTO supporters (
 		return 0, errors.Wrapf(err, "Could not get LastInsertId for supporter %s", supporter.Email)
 	}
 	return int(id), nil
+}
+
+func validateGetSupporterOptions(o GetSupporterOptions) (GetSupporterOptions, error) {
+	// Set defaults
+	if o.Order == 0 {
+		o.Order = DescOrder
+	}
+	if o.OrderField == "" {
+		o.OrderField = "email"
+	}
+
+	if o.Order != DescOrder && o.Order != AscOrder {
+		return GetSupporterOptions{}, errors.New("Supporters Range order must be ascending or descending")
+	}
+	if _, ok := validSupporterOrderFields[o.OrderField]; !ok {
+		return GetSupporterOptions{}, errors.New("Supporter OrderField is not valid")
+	}
+	return o, nil
+}
+
+func CleanGetSupporterOptions(body io.Reader) (GetSupporterOptions, error) {
+	var getSupporterOptions GetSupporterOptions
+	err := json.NewDecoder(body).Decode(&getSupporterOptions)
+	if err != nil {
+		return GetSupporterOptions{}, err
+	}
+	getSupporterOptions, err = validateGetSupporterOptions(getSupporterOptions)
+	if err != nil {
+		return GetSupporterOptions{}, err
+	}
+	return getSupporterOptions, nil
+}
+
+func GetSupportersJSON(db *sqlx.DB, options GetSupporterOptions) ([]SupporterJSON, error) {
+	if options.ID != 0 {
+		return nil, errors.New("GetSupportersJSON: Cannot include ID in options")
+	}
+	return getSupportersJSON(db, options)
+}
+
+func getSupportersJSON(db *sqlx.DB, options GetSupporterOptions) ([]SupporterJSON, error) {
+	supporters, err := GetSupporters(db, options)
+	if err != nil {
+		return nil, err
+	}
+	return buildSupporterJSONArray(supporters), nil
+}
+
+func GetSupporters(db *sqlx.DB, options GetSupporterOptions) ([]Supporter, error) {
+	// Redundant options validation
+	var err error
+	options, err = validateGetSupporterOptions(options)
+	if err != nil {
+		return nil, err
+	}
+
+	query := `
+SELECT
+  id,
+  first_name,
+  last_name,
+  email,
+  phone,
+  location_address1,
+  location_address2,
+  location_city,
+  location_state,
+  location_zip,
+  source,
+  date_sourced,
+  requested_lawn_sign,
+  requested_poster,
+  voter,
+  issue_housing,
+  issue_homelessness,
+  issue_climate,
+  issue_public_safety,
+  issue_police_accountability,
+  issue_transit,
+  issue_economic_equality,
+  issue_public_health,
+  issue_animal_rights,
+  interest_donate,
+  interest_attend_event,
+  interest_volunteer,
+  interest_host_event,
+  notes,
+  requires_followup
+FROM supporters s
+`
+
+	var queryArgs []interface{}
+
+	if options.ID != 0 {
+		// retrieve specific supporter
+		query += " WHERE o.id = ? "
+		queryArgs = append(queryArgs, options.ID)
+	}
+
+	orderField := options.OrderField
+	// Default to a.name if orderField isn't specified
+	if orderField == "" {
+		orderField = "first_name"
+	}
+	// Paranoid check b/c this could be a sql injection.
+	if _, ok := validSupporterOrderFields[orderField]; !ok {
+		return nil, errors.New("Invalid OrderField")
+	}
+
+	query += " ORDER BY " + options.OrderField
+	if options.Order == DescOrder {
+		query += " desc "
+	}
+
+	var supporters []Supporter
+	if err := db.Select(&supporters, query, queryArgs...); err != nil {
+		return nil, errors.Wrapf(err, "fail to get supporters for uid %d", options.ID)
+	}
+
+	return supporters, nil
+}
+
+func buildSupporterJSONArray(supporters []Supporter) []SupporterJSON {
+	var supportersJSON []SupporterJSON
+
+	for _, s := range supporters {
+		supportersJSON = append(supportersJSON, SupporterJSON{
+			ID:                        s.ID,
+			FirstName:                 s.FirstName,
+			LastName:                  s.LastName,
+			Email:                     s.Email,
+			Phone:                     s.Phone,
+			LocationAddress1:          s.LocationAddress1,
+			LocationAddress2:          s.LocationAddress2,
+			LocationCity:              s.LocationCity,
+			LocationState:             s.LocationState,
+			LocationZIP:               s.LocationZIP,
+			Source:                    s.Source,
+			DateSourced:               s.DateSourced,
+			RequestedLawnSign:         s.RequestedLawnSign,
+			RequestedPoster:           s.RequestedPoster,
+			Voter:                     s.Voter,
+			IssueHousing:              s.IssueHousing,
+			IssueHomelessness:         s.IssueHomelessness,
+			IssueClimate:              s.IssueClimate,
+			IssuePublicSafety:         s.IssuePublicSafety,
+			IssuePoliceAccountability: s.IssuePoliceAccountability,
+			IssueTransit:              s.IssueTransit,
+			IssueEconomicEquality:     s.IssueEconomicEquality,
+			IssuePublicHealth:         s.IssuePublicHealth,
+			IssueAnimalRights:         s.IssueAnimalRights,
+			InterestDonate:            s.InterestDonate,
+			InterestAttendEvent:       s.InterestAttendEvent,
+			InterestVolunteer:         s.InterestVolunteer,
+			InterestHostEvent:         s.InterestHostEvent,
+			Notes:                     s.Notes,
+			RequiresFollowup:          s.RequiresFollowup,
+		})
+	}
+	return supportersJSON
 }

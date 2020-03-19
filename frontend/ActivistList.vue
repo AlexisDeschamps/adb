@@ -196,32 +196,6 @@
         </div>
       </div>
     </modal>
-    <!-- <modal
-       name="connection-modal"
-       :height="400"
-       classes="no-background-color"
-       @opened="modalOpened"
-       @closed="modalClosed"
-       >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title">Add maintenance connection</h2>
-          </div>
-          <div class="modal-body">
-            <p><b>WARNING: This feature is not yet available!</b></p>
-            <br />
-            <p>Activist ID: {{currentActivist.id}}</p>
-            <p>Activist Name: {{currentActivist.name}}</p>
-            <p>Connector: {{currentActivist.connector}}</p>
-            <p>Date: <input id="connection-date" type="date"></p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="hideModal">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </modal> -->
   </adb-page>
 </template>
 
@@ -310,6 +284,380 @@ function lookupZipcodes(input: string) {
     let zips = cityData.map((a) => a.zip);
     return zips;
   }
+}
+
+function getDefaultCanvassSupportersColumns(view: string): Column[] {
+  return [
+    {
+      header: '',
+      data: {
+        renderer: optionsButtonRenderer,
+        readOnly: true,
+        disableVisualSelection: true,
+        colWidths: 35,
+      },
+      enabled: true,
+    },
+    {
+      header: 'ID',
+      longHeader: 'ID',
+      data: {
+        type: 'numeric',
+        data: 'id',
+        readOnly: true,
+        colWidths: 50,
+      },
+      enabled: false,
+    },
+    {
+      header: 'First Name',
+      longHeader: 'First Name',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+
+        data: 'first_name',
+        colWidths: 150,
+      },
+      enabled: true,
+    },
+    {
+      header: 'Last Name',
+      longHeader: 'Last Name',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'last_name',
+        colWidths: 150,
+      },
+      enabled: true,
+    },
+    {
+      header: 'Email',
+      longHeader: 'Email',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'email',
+        colWidths: 150,
+        validator: (email: string, cb: Function) => {
+          // Allow saving empty email
+          if (!email) {
+            return cb(true);
+          }
+
+          emailValidator(email, (isValid: boolean) => {
+            // Show invalid email error message
+            if (!isValid) {
+              flashMessage('Email field is invalid. Please provide a valid email address.', true);
+            }
+
+            return cb(isValid);
+          });
+        },
+        allowInvalid: false,
+      },
+      enabled: true,
+    },
+    {
+      header: 'Phone',
+      longHeader: 'Phone Number',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'phone',
+        colWidths: 100,
+      },
+      enabled: true,
+    },
+    {
+      header: 'Address 1',
+      longHeader: 'Address 1',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'location_address1',
+        colWidths: 100,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Address 2',
+      longHeader: 'Address 2',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'location_address2',
+        colWidths: 100,
+      },
+      enabled: false,
+    },
+    {
+      header: 'City',
+      longHeader: 'City',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'location_city',
+        colWidths: 100,
+      },
+      enabled: false,
+    },
+    {
+      header: 'State',
+      longHeader: 'State',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'location_state',
+        colWidths: 40,
+      },
+      enabled: false,
+    },
+    {
+      header: 'ZIP',
+      longHeader: 'ZIP Code',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'location_zip',
+        colWidths: 100,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Source',
+      longHeader: 'Source',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'source',
+        colWidths: 100,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Date Sourced',
+      longHeader: 'Date Sourced',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'date',
+        data: 'date_sourced',
+        dateFormat: 'YYYY-MM-DD',
+        correctFormat: true,
+        colWidths: 100,
+      },
+      enabled: true,
+    },
+    {
+      header: 'Lawn Sign',
+      longHeader: 'Requested Lawn Sign',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'requested_lawn_sign',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Poster',
+      longHeader: 'Requested Poster',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'requested_poster',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Voter',
+      longHeader: 'Registered Berkeley Voter',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'voter',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+
+    {
+      header: 'Housing',
+      longHeader: 'Issue: Housing',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_housing',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Homelessness',
+      longHeader: 'Issue: Homelessness',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_homelessness',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Climate',
+      longHeader: 'Issue: Climate',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_climate',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Public Safety',
+      longHeader: 'Issue: Public Safety',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_public_safety',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Police Acct.',
+      longHeader: 'Issue: Police Accountability',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_police_accountability',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Transit',
+      longHeader: 'Issue: Transit',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_transit',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Economic Eq.',
+      longHeader: 'Issue: Economic Equality',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_economic_equality',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Public Health',
+      longHeader: 'Issue: Public Health',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_public_health',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Animal Rights',
+      longHeader: 'Issue: Animal Rights',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'issue_animal_rights',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+
+    {
+      header: 'Donate',
+      longHeader: 'Interest: Donate',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'interest_donate',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Attend Event',
+      longHeader: 'Interest: Attend Event',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'interest_attend_event',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Volunteer',
+      longHeader: 'Interest: Volunteer',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'interest_volunteer',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+    {
+      header: 'Host Event',
+      longHeader: 'Interest: Host Event',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'interest_host_event',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+
+    {
+      header: 'Notes',
+      longHeader: 'Notes',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        data: 'notes',
+        colWidths: 100,
+      },
+      enabled: false,
+    },
+
+    {
+      header: 'Requires Followup',
+      longHeader: 'Requires Followup',
+      data: {
+        readOnly: true, // SAMER: remove this after implementing save
+        type: 'dropdown',
+        source: [true, false],
+        data: 'requires_followup',
+        colWidths: 80,
+      },
+      enabled: false,
+    },
+  ];
 }
 
 function getDefaultColumns(view: string): Column[] {
@@ -1171,7 +1519,7 @@ export default Vue.extend({
     description: String,
     // `view` is the default view to show. It can be one of:
     // "all_activists", "leaderboard", "activist_pool",
-    // "activist_recruitment", or "action_team"
+    // "activist_recruitment", "action_team", or "supporters"
     view: {
       type: String,
       /*validator(value) {
@@ -1347,9 +1695,11 @@ export default Vue.extend({
       this.loading = true;
 
       $.ajax({
-        url: '/activist/list',
+        url: (this.canvassSupporters ? '/canvass/supporter/list' : '/activist/list'),
         method: 'POST',
-        data: JSON.stringify(this.listActivistsParameters()),
+        data: (this.canvassSupporters ?
+               JSON.stringify(this.listCanvassSupportersParameters()) :
+               JSON.stringify(this.listActivistsParameters())),
         success: (data) => {
           var parsed = JSON.parse(data);
 
@@ -1434,6 +1784,15 @@ export default Vue.extend({
       }
       var y = (hotContainer.getBoundingClientRect() as DOMRect).y;
       this.height = window.innerHeight - y;
+    },
+    listCanvassSupportersParameters() {
+      var order_field = 'first_name';
+
+      return {
+        order: DescOrder,
+        order_field: order_field,
+        filter: this.view,
+      }
     },
     listActivistsParameters() {
       var order_field = 'last_event';
@@ -1539,6 +1898,10 @@ export default Vue.extend({
       var initDateFrom = '';
       var initDateTo = '';
     }
+    let canvassSupporterViews = {
+      'all_supporters': true,
+    };
+    const canvassSupporters = this.view in canvassSupporterViews;
 
     return {
       root: 'activists-root',
@@ -1548,7 +1911,9 @@ export default Vue.extend({
       disableConfirmButton: false,
       allActivists: [] as Activist[],
       height: 500,
-      columns: getDefaultColumns(this.view),
+      columns: (canvassSupporters ?
+                getDefaultCanvassSupportersColumns(this.view) :
+                getDefaultColumns(this.view)),
       lastEventDateFrom: initDateFrom,
       lastEventDateTo: initDateTo,
       filterInterest: 'All',
@@ -1557,6 +1922,7 @@ export default Vue.extend({
       search: '',
       searchLocation: '',
       loading: false,
+      canvassSupporters: canvassSupporters,
     };
   },
   computed: {
