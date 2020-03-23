@@ -414,7 +414,7 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
         data: 'location_zip',
         colWidths: 100,
       },
-      enabled: false,
+      enabled: true,
     },
     {
       header: 'Source',
@@ -424,7 +424,7 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
         data: 'source',
         colWidths: 100,
       },
-      enabled: false,
+      enabled: true,
     },
     {
       header: 'Date Sourced',
@@ -619,7 +619,7 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
         data: 'interest_volunteer',
         colWidths: 80,
       },
-      enabled: false,
+      enabled: true,
     },
     {
       header: 'Host Event',
@@ -642,7 +642,7 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
         data: 'notes',
         colWidths: 100,
       },
-      enabled: false,
+      enabled: true,
     },
 
     {
@@ -1786,7 +1786,7 @@ export default Vue.extend({
       this.height = window.innerHeight - y;
     },
     listCanvassSupportersParameters() {
-      var order_field = 'first_name';
+      var order_field = 'date_sourced';
 
       return {
         order: DescOrder,

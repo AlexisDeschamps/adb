@@ -97,9 +97,10 @@ type GetSupporterOptions struct {
 }
 
 var validSupporterOrderFields = map[string]struct{}{
-	"first_name": struct{}{},
-	"email":      struct{}{},
-	"phone":      struct{}{},
+	"first_name":   struct{}{},
+	"email":        struct{}{},
+	"phone":        struct{}{},
+	"date_sourced": struct{}{},
 }
 
 func CleanSupporterData(body io.Reader) (Supporter, error) {
@@ -233,7 +234,7 @@ func validateGetSupporterOptions(o GetSupporterOptions) (GetSupporterOptions, er
 		o.Order = DescOrder
 	}
 	if o.OrderField == "" {
-		o.OrderField = "email"
+		o.OrderField = "date_sourced"
 	}
 
 	if o.Order != DescOrder && o.Order != AscOrder {
