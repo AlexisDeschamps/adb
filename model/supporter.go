@@ -90,10 +90,11 @@ type SupporterJSON struct {
 }
 
 type GetSupporterOptions struct {
-	ID         int    `json:"id"`
-	Order      int    `json:"order"`
-	OrderField string `json:"order_field"`
-	Filter     string `json:"filter"`
+	ID                 int    `json:"id"`
+	Order              int    `json:"order"`
+	OrderField         string `json:"order_field"`
+	Filter             string `json:"filter"`
+	RestrictToBerkeley bool   `json:"restrict_to_berkeley"`
 }
 
 var validSupporterOrderFields = map[string]struct{}{
@@ -321,14 +322,20 @@ FROM supporters s
 
 	if options.ID != 0 {
 		// retrieve specific supporter
-		query += " WHERE o.id = ? "
+		query += " WHERE s.id = ? "
 		queryArgs = append(queryArgs, options.ID)
+	} else {
+		if options.RestrictToBerkeley {
+			query += ` WHERE
+  location_zip IN ('94701', '94702', '94703', '94704', '94705', '94706', '94707', '94708', '94709', '94710', '94712', '94720')
+`
+		}
 	}
 
 	orderField := options.OrderField
-	// Default to a.name if orderField isn't specified
+	// Default to date_sourced if orderField isn't specified
 	if orderField == "" {
-		orderField = "first_name"
+		orderField = "date_sourced"
 	}
 	// Paranoid check b/c this could be a sql injection.
 	if _, ok := validSupporterOrderFields[orderField]; !ok {
@@ -337,8 +344,11 @@ FROM supporters s
 
 	query += " ORDER BY " + options.OrderField
 	if options.Order == DescOrder {
-		query += " desc "
+		query += " DESC "
 	}
+	// Add ID as second thing to order by so the order is the same
+	// every time.
+	query += ", s.id DESC "
 
 	var supporters []Supporter
 	if err := db.Select(&supporters, query, queryArgs...); err != nil {

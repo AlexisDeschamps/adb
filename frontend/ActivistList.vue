@@ -24,7 +24,11 @@
       <span v-if="loading"><i>Loading...</i></span>
 
       <div v-if="showOptions === 'filters'">
-        <div>
+        <div v-if="canvassSupporters">
+          <input type="checkbox" id="zipcode-restrict-to-berkeley" v-model="canvassSupportersRestrictToBerkeley" />
+          <label for="zipcode-restrict-to-berkeley">Restrict to Berkeley ZIP Codes</label>
+        </div>
+        <div v-if="!canvassSupporters">
           <label>Location:</label>
 
           <input
@@ -1792,6 +1796,7 @@ export default Vue.extend({
         order: DescOrder,
         order_field: order_field,
         filter: this.view,
+        restrict_to_berkeley: this.canvassSupportersRestrictToBerkeley,
       }
     },
     listActivistsParameters() {
@@ -1918,11 +1923,12 @@ export default Vue.extend({
       lastEventDateTo: initDateTo,
       filterInterest: 'All',
       filterRadius: '5',
-      showOptions: '',
+      showOptions: (canvassSupporters ? 'filters' : ''),
       search: '',
       searchLocation: '',
       loading: false,
       canvassSupporters: canvassSupporters,
+      canvassSupportersRestrictToBerkeley: true,
     };
   },
   computed: {
@@ -1998,10 +2004,23 @@ export default Vue.extend({
         for (var i = 0; i < this.allActivists.length; i++) {
           var activist = this.allActivists[i];
 
+          let name = activist.name;
+          if (this.canvassSupporters) {
+            if (activist.first_name && activist.last_name) {
+              name = activist.first_name + " " + activist.last_name;
+            } else if (activist.first_name) {
+              name = activist.first_name;
+            } else if (activist.last_name) {
+              name = activist.last_name;
+            } else {
+              name = '';
+            }
+          }
+
           // if filterName & filterLoc true, filter by both
           if (filterName && filterLoc) {
             if (
-              activist.name.toLowerCase().includes(searchNameNormalized) &&
+              name.toLowerCase().includes(searchNameNormalized) &&
               zipcodeRange.indexOf(activist.location) !== -1
             ) {
               activists.push(activist);
@@ -2010,7 +2029,7 @@ export default Vue.extend({
 
           // else if filterName is true, filter by it
           else if (filterName) {
-            if (activist.name.toLowerCase().includes(searchNameNormalized)) {
+            if (name.toLowerCase().includes(searchNameNormalized)) {
               activists.push(activist);
             }
           }
@@ -2035,6 +2054,9 @@ export default Vue.extend({
       this.loadActivists();
     },
     filterInterest() {
+      this.loadActivists();
+    },
+    canvassSupportersRestrictToBerkeley() {
       this.loadActivists();
     },
   },
