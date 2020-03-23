@@ -75,9 +75,7 @@ a.logout-link:hover, a.logout-link:active {
 }
 
 .body-wrapper-extra-wide {
-        max-width: 95%;
         background-color: white;
-        padding: 25px 40px 25px 40px; 
         margin: 0 auto;
         box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
         opacity: 0.98;
@@ -94,7 +92,6 @@ a.logout-link:hover, a.logout-link:active {
     display: none;
 }
 
-
 /* title */
 .title {
     box-shadow: none;
@@ -107,6 +104,10 @@ a.logout-link:hover, a.logout-link:active {
 
 .description {
     font-size: 0.9em;
+}
+
+.title-description-wide-wrapper {
+    padding: 20px;
 }
 
 /* event_new */

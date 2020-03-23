@@ -1,10 +1,12 @@
 <template>
   <div :class="wrapperClass">
-    <div class="title">
-      <h1>{{ title }}</h1>
-    </div>
+    <div :class="titleDescriptionWrapperClass">
+      <div class="title">
+        <h1>{{ title }}</h1>
+      </div>
 
-    <div class="description">{{ description }}</div>
+      <div class="description">{{ description }}</div>
+    </div>
 
     <br />
 
@@ -39,6 +41,12 @@ export default Vue.extend({
         return 'body-wrapper';
       }
       return 'body-wrapper-wide';
+    },
+    titleDescriptionWrapperClass(): string {
+      if (this.wide) {
+        return 'title-description-wide-wrapper';
+      }
+      return '';
     },
   },
 });
