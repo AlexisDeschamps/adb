@@ -19,6 +19,7 @@ var (
 	Route0 = mustGetenv("ROUTE_0", "/route0", true)
 	Route1 = mustGetenv("ROUTE_1", "/route1", true)
 	Route2 = mustGetenv("ROUTE_2", "/route2", true)
+	Route3 = mustGetenv("ROUTE_3", "/route3", true)
 
 	CookieSecret = mustGetenv("COOKIE_SECRET", "some-fake-secret", true)
 

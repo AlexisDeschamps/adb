@@ -163,6 +163,9 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.HandleFunc("/wallboard_mpi", main.newPowerWallboard)                    // new endpoint for arc tv to get mpi
 	router.HandleFunc("/wallboard_chaptermembers", main.newChapterMemberWallboard) // new endpoint for arc tv to get chapter members
 	router.HandleFunc(config.Route2, main.ActivistListHandler)                     // used for connections google sheet
+	if config.Route3 != "" {
+		router.HandleFunc(config.Route3, main.ApiUnauthedSaveWebsiteSupporterHandler)
+	}
 
 	// Authed API
 	router.Handle("/activist_names/get", alice.New(main.apiAttendanceAuthMiddleware).ThenFunc(main.AutocompleteActivistsHandler))
@@ -1332,6 +1335,46 @@ func (c MainController) CanvassSupporterListHandler(w http.ResponseWriter, r *ht
 		"status":        "success",
 		"activist_list": supporters,
 	})
+}
+
+func (c MainController) ApiUnauthedSaveWebsiteSupporterHandler(w http.ResponseWriter, r *http.Request) {
+	supporter, err := model.CleanSupporterData(r.Body)
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+	if supporter.Email == "" {
+		err := errors.New("Supporter must have email")
+		sendErrorMessage(w, err)
+		return
+	}
+	if supporter.LocationZIP == "" {
+		err := errors.New("Supporter must have location_zip")
+		sendErrorMessage(w, err)
+		return
+	}
+	if supporter.DateSourced == "" {
+		err := errors.New("Supporter must have date_sourced")
+		sendErrorMessage(w, err)
+		return
+	}
+	if supporter.Source != "" {
+		err := errors.New("Supporter must have empty source")
+		sendErrorMessage(w, err)
+		return
+	}
+
+	supporter.Source = "website"
+	_, err = model.CreateSupporter(c.db, supporter)
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+
+	out := map[string]interface{}{
+		"status": "success",
+	}
+	writeJSON(w, out)
 }
 
 func main() {
