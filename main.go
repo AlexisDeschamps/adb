@@ -17,6 +17,7 @@ import (
 	"github.com/dxe/adb/mailinglist_sync"
 	"github.com/dxe/adb/members"
 	"github.com/dxe/adb/model"
+	"github.com/dxe/adb/sendy_sync"
 	"github.com/dxe/adb/survey_mailer"
 	"github.com/getsentry/sentry-go"
 	"github.com/gorilla/mux"
@@ -1399,6 +1400,11 @@ func main() {
 	// the environment set up.
 	if config.SurveyMissingEmail != "" && config.SurveyFromEmail != "" && config.AWSAccessKey != "" && config.AWSSecretKey != "" && config.AWSSESEndpoint != "" {
 		go survey_mailer.StartSurveyMailer(db)
+	}
+
+	// Start sendy sync
+	if config.SendyAPIKey != "" {
+		go sendy_sync.StartSupportersSendySync(db, config.SendyAPIKey, config.SendyAllADBList)
 	}
 
 	// Set up server

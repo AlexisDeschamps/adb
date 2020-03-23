@@ -44,6 +44,10 @@ var (
 	// For members.dxesf.org
 	MembersClientID     = mustGetenv("MEMBERS_CLIENT_ID", "", false)
 	MembersClientSecret = mustGetenv("MEMBERS_CLIENT_SECRET", "", false)
+
+	// For sendy sync
+	SendyAPIKey     = mustGetenv("SENDY_API_KEY", "", false)
+	SendyAllADBList = mustGetenv("SENDY_ALL_ADB_LIST", "", false)
 )
 
 func mustGetenv(key, fallback string, mandatory bool) string {

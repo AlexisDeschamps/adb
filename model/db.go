@@ -30,6 +30,7 @@ func WipeDatabase(db *sqlx.DB) {
 	db.MustExec(`DROP TABLE IF EXISTS circles`)
 	db.MustExec(`DROP TABLE IF EXISTS circle_members`)
 	db.MustExec(`DROP TABLE IF EXISTS supporters`)
+	db.MustExec(`DROP TABLE IF EXISTS supporters_sendy_sync`)
 
 	db.MustExec(`
 CREATE TABLE activists (
@@ -252,6 +253,17 @@ CREATE TABLE supporters (
 
   -- canvasser_user_id INTEGER NOT NULL,
   -- canvass_leader_user_id INTEGER NOT NULL
+)
+`)
+
+	db.MustExec(`
+CREATE TABLE supporters_sendy_sync (
+  supporter_id INTEGER PRIMARY KEY,
+  sendy_list_id VARCHAR(80) NOT NULL,
+  email VARCHAR(80) NOT NULL,
+  sync_status INTEGER NOT NULL,
+  sync_timestamp DATETIME NOT NULL,
+  INDEX (sendy_list_id, email)
 )
 `)
 
