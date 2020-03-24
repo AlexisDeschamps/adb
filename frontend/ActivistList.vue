@@ -214,7 +214,6 @@ import { flashMessage } from './flash_message';
 import { EventBus } from './EventBus';
 import { initActivistSelect } from './chosen_utils';
 import debounce from 'debounce';
-import zipcodes from 'zipcodes';
 
 Vue.use(vmodal);
 
@@ -265,27 +264,27 @@ function emailValidator(value: string, callback: Function) {
   }, 250);
 }
 
-function zipcodeRadius(zip: string[], radius: any) {
+function zipcodeRadius(zipcodes: any, zip: string[], radius: any) {
   // radius to check
 
   var allZipsInRadius: any[] = [];
 
   for (var i = 0; i < zip.length; i++) {
-    var zipsInRadius = zipcodes.radius(zip[i], radius, false);
+    var zipsInRadius: any = zipcodes.radius(zip[i], radius, false);
     allZipsInRadius = allZipsInRadius.concat(zipsInRadius); // need to add arr to arr
   }
   return allZipsInRadius;
 }
 
-function lookupZipcodes(input: string) {
+function lookupZipcodes(zipcodes: any, input: string) {
   var hasNumber = /\d/;
   if (hasNumber.test(input)) {
     // probably a zip
     return [input];
   } else {
     // try to lookup zipcodes for city name
-    var cityData = zipcodes.lookupByName(input, 'CA');
-    let zips = cityData.map((a) => a.zip);
+    var cityData: any = zipcodes.lookupByName(input, 'CA');
+    let zips = cityData.map((a: any) => a.zip);
     return zips;
   }
 }
@@ -1922,6 +1921,104 @@ export default Vue.extend({
     debounceLocationRadiusInput: debounce(function(this: any, e: Event) {
       this.filterRadius = (e.target as HTMLInputElement).value;
     }, 500),
+    filterActivists() {
+      // This search implementation is slow when we have lots of data.
+      // Make it faster when that becomes an issue.
+
+      // Since we might kick off multiple long-running requests, only
+      // update filteredActivists if the filterId the promise is using
+      // equals the current filterId.
+      this.filterId += 1;
+
+      if (this.search.length < 3 && this.searchLocation.length < 4) {
+        // show all
+        if (this.filteredActivists !== null) {
+          this.filteredActivists = null;
+        }
+        return;
+      }
+
+      new Promise<{zipcodes: any, currentFilterId: Number}>((resolve, reject) => {
+        let currentFilterId = this.filterId;
+
+        if (this.searchLocation.length >= 4) {
+          // Lazy-load the zipcodes library because it's huge.
+          import(/* webpackChunkName: "zipcodes" */ 'zipcodes').then(({radius, lookupByName}) => {
+            resolve({zipcodes: {radius, lookupByName}, currentFilterId});
+          });
+        } else {
+          resolve({zipcodes: null, currentFilterId});
+        }
+      }).then((args: {zipcodes: any, currentFilterId: Number}) => {
+        let zipcodes = args.zipcodes;
+        let currentFilterId = args.currentFilterId;
+
+        if (currentFilterId != this.filterId) {
+          // Stop execution early if the user kicked off another
+          // filter request in the meantime.
+          return;
+        }
+        // prepare for searching
+        var searchNameNormalized = this.search.trim().toLowerCase();
+        var searchLocNormalized = this.searchLocation.trim();
+        var activists: Activist[] = [];
+        var filterName = false;
+        var filterLoc = false;
+
+        if (this.search.length >= 3) {
+          var filterName = true;
+        }
+
+        if (this.searchLocation.length >= 4) {
+          var filterLoc = true;
+          var zipsToCheck = lookupZipcodes(zipcodes, searchLocNormalized);
+          var zipcodeRange: any = zipcodeRadius(zipcodes, zipsToCheck, this.filterRadius);
+        }
+
+        for (var i = 0; i < this.allActivists.length; i++) {
+          var activist = this.allActivists[i];
+
+          let name = activist.name;
+          if (this.canvassSupporters) {
+            if (activist.first_name && activist.last_name) {
+              name = activist.first_name + " " + activist.last_name;
+            } else if (activist.first_name) {
+              name = activist.first_name;
+            } else if (activist.last_name) {
+              name = activist.last_name;
+            } else {
+              name = '';
+            }
+          }
+
+          // if filterName & filterLoc true, filter by both
+          if (filterName && filterLoc) {
+            if (
+              name.toLowerCase().includes(searchNameNormalized) &&
+                zipcodeRange.indexOf(activist.location) !== -1
+            ) {
+              activists.push(activist);
+            }
+          }
+
+          // else if filterName is true, filter by it
+          else if (filterName) {
+            if (name.toLowerCase().includes(searchNameNormalized)) {
+              activists.push(activist);
+            }
+          }
+
+          // else filter by location only
+          else {
+            if (zipcodeRange.indexOf(activist.location) !== -1) {
+              activists.push(activist);
+            }
+          }
+        }
+
+        this.filteredActivists = activists;
+      });
+    },
   },
   data() {
     if (this.view === ('all_activists' || 'leaderboard')) {
@@ -1943,6 +2040,7 @@ export default Vue.extend({
       currentActivist: {} as Activist,
       disableConfirmButton: false,
       allActivists: [] as Activist[],
+      filteredActivists: null as (Activist[] | null),
       height: 500,
       columns: (canvassSupporters ?
                 getDefaultCanvassSupportersColumns(this.view) :
@@ -1957,6 +2055,7 @@ export default Vue.extend({
       loading: false,
       canvassSupporters: canvassSupporters,
       canvassSupportersRestrictToBerkeley: true,
+      filterId: 0,
     };
   },
   computed: {
@@ -2005,73 +2104,10 @@ export default Vue.extend({
       return (this.$refs.hot as any).table as Handsontable;
     },
     activists(): Activist[] {
-      // This search implementation is slow when we have lots of data.
-      // Make it faster when that becomes an issue.
-
-      if (this.search.length < 3 && this.searchLocation.length < 4) {
-        // show all
-        return this.allActivists;
-      } else {
-        // prepare for searching
-        var searchNameNormalized = this.search.trim().toLowerCase();
-        var searchLocNormalized = this.searchLocation.trim();
-        var activists: Activist[] = [];
-        var filterName = false;
-        var filterLoc = false;
-
-        if (this.search.length >= 3) {
-          var filterName = true;
-        }
-
-        if (this.searchLocation.length >= 4) {
-          var filterLoc = true;
-          var zipsToCheck = lookupZipcodes(searchLocNormalized);
-          var zipcodeRange: any = zipcodeRadius(zipsToCheck, this.filterRadius);
-        }
-
-        for (var i = 0; i < this.allActivists.length; i++) {
-          var activist = this.allActivists[i];
-
-          let name = activist.name;
-          if (this.canvassSupporters) {
-            if (activist.first_name && activist.last_name) {
-              name = activist.first_name + " " + activist.last_name;
-            } else if (activist.first_name) {
-              name = activist.first_name;
-            } else if (activist.last_name) {
-              name = activist.last_name;
-            } else {
-              name = '';
-            }
-          }
-
-          // if filterName & filterLoc true, filter by both
-          if (filterName && filterLoc) {
-            if (
-              name.toLowerCase().includes(searchNameNormalized) &&
-              zipcodeRange.indexOf(activist.location) !== -1
-            ) {
-              activists.push(activist);
-            }
-          }
-
-          // else if filterName is true, filter by it
-          else if (filterName) {
-            if (name.toLowerCase().includes(searchNameNormalized)) {
-              activists.push(activist);
-            }
-          }
-
-          // else filter by location only
-          else {
-            if (zipcodeRange.indexOf(activist.location) !== -1) {
-              activists.push(activist);
-            }
-          }
-        }
-
-        return activists;
+      if (this.filteredActivists !== null) {
+        return this.filteredActivists;
       }
+      return this.allActivists;
     },
   },
   watch: {
@@ -2086,6 +2122,15 @@ export default Vue.extend({
     },
     canvassSupportersRestrictToBerkeley() {
       this.loadActivists();
+    },
+    filterRadius() {
+      this.filterActivists();
+    },
+    searchLocation() {
+      this.filterActivists();
+    },
+    search() {
+      this.filterActivists();
     },
   },
   created() {

@@ -13,8 +13,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: '[name].js',
+    chunkFilename: '[name].[contenthash].js',
     library: '[name]',
     libraryTarget: 'var',
+    publicPath: '/dist/',
   },
 
   plugins: [
