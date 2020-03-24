@@ -104,6 +104,10 @@ var validSupporterOrderFields = map[string]struct{}{
 	"date_sourced": struct{}{},
 }
 
+func (s Supporter) ToJSON() SupporterJSON {
+	return buildSupporterJSONArray([]Supporter{s})[0]
+}
+
 func CleanSupporterData(body io.Reader) (Supporter, error) {
 	var supporterJSON SupporterJSON
 	err := json.NewDecoder(body).Decode(&supporterJSON)
@@ -144,6 +148,62 @@ func CleanSupporterData(body io.Reader) (Supporter, error) {
 		RequiresFollowup:          supporterJSON.RequiresFollowup,
 	}
 	return supporter, nil
+}
+
+func CreateUpdateSupporter(db *sqlx.DB, supporter Supporter) (int, error) {
+	if supporter.ID == 0 {
+		return CreateSupporter(db, supporter)
+	}
+	return UpdateSupporter(db, supporter)
+}
+
+func UpdateSupporter(db *sqlx.DB, supporter Supporter) (int, error) {
+	if supporter.ID == 0 {
+		return 0, errors.New("Cannot update supporter when ID == 0")
+	}
+	if supporter.Email == "" && supporter.Phone == "" {
+		return 0, errors.New("Cannot update supporter if either email or phone isn't set")
+	}
+
+	_, err := db.NamedExec(`
+UPDATE supporters
+SET
+  first_name = :first_name,
+  last_name = :last_name,
+  email = :email,
+  phone = :phone,
+  location_address1 = :location_address1,
+  location_address2 = :location_address2,
+  location_city = :location_city,
+  location_state = :location_state,
+  location_zip = :location_zip,
+  source = :source,
+  date_sourced = :date_sourced,
+  requested_lawn_sign = :requested_lawn_sign,
+  requested_poster = :requested_poster,
+  voter = :voter,
+  issue_housing = :issue_housing,
+  issue_homelessness = :issue_homelessness,
+  issue_climate = :issue_climate,
+  issue_public_safety = :issue_public_safety,
+  issue_police_accountability = :issue_police_accountability,
+  issue_transit = :issue_transit,
+  issue_economic_equality = :issue_economic_equality,
+  issue_public_health = :issue_public_health,
+  issue_animal_rights = :issue_animal_rights,
+  interest_donate = :interest_donate,
+  interest_attend_event = :interest_attend_event,
+  interest_volunteer = :interest_volunteer,
+  interest_host_event = :interest_host_event,
+  notes = :notes,
+  requires_followup = :requires_followup
+WHERE
+  id = :id`, supporter)
+
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to update supporter")
+	}
+	return supporter.ID, nil
 }
 
 func CreateSupporter(db *sqlx.DB, supporter Supporter) (int, error) {
@@ -260,6 +320,23 @@ func CleanGetSupporterOptions(body io.Reader) (GetSupporterOptions, error) {
 	return getSupporterOptions, nil
 }
 
+func GetSupporter(db *sqlx.DB, options GetSupporterOptions) (Supporter, error) {
+	if options.ID == 0 {
+		return Supporter{}, errors.New("GetSupporter: Must pass in ID")
+	}
+	supporters, err := GetSupporters(db, options)
+	if err != nil {
+		return Supporter{}, errors.Wrap(err, "GetSupporter: error getting supporter from db")
+	}
+	if len(supporters) == 0 {
+		return Supporter{}, errors.New("GetSupporter: supporter not found")
+	}
+	if len(supporters) > 1 {
+		return Supporter{}, errors.New("GetSupporter: too many supporters for ID")
+	}
+	return supporters[0], nil
+}
+
 func GetSupportersJSON(db *sqlx.DB, options GetSupporterOptions) ([]SupporterJSON, error) {
 	if options.ID != 0 {
 		return nil, errors.New("GetSupportersJSON: Cannot include ID in options")
@@ -325,30 +402,32 @@ FROM supporters s
 		query += " WHERE s.id = ? "
 		queryArgs = append(queryArgs, options.ID)
 	} else {
+		// get multiple supporters
+
 		if options.RestrictToBerkeley {
 			query += ` WHERE
   location_zip IN ('94701', '94702', '94703', '94704', '94705', '94706', '94707', '94708', '94709', '94710', '94712', '94720')
 `
 		}
-	}
 
-	orderField := options.OrderField
-	// Default to date_sourced if orderField isn't specified
-	if orderField == "" {
-		orderField = "date_sourced"
-	}
-	// Paranoid check b/c this could be a sql injection.
-	if _, ok := validSupporterOrderFields[orderField]; !ok {
-		return nil, errors.New("Invalid OrderField")
-	}
+		orderField := options.OrderField
+		// Default to date_sourced if orderField isn't specified
+		if orderField == "" {
+			orderField = "date_sourced"
+		}
+		// Paranoid check b/c this could be a sql injection.
+		if _, ok := validSupporterOrderFields[orderField]; !ok {
+			return nil, errors.New("Invalid OrderField")
+		}
 
-	query += " ORDER BY " + options.OrderField
-	if options.Order == DescOrder {
-		query += " DESC "
+		query += " ORDER BY " + options.OrderField
+		if options.Order == DescOrder {
+			query += " DESC "
+		}
+		// Add ID as second thing to order by so the order is the same
+		// every time.
+		query += ", s.id DESC "
 	}
-	// Add ID as second thing to order by so the order is the same
-	// every time.
-	query += ", s.id DESC "
 
 	var supporters []Supporter
 	if err := db.Select(&supporters, query, queryArgs...); err != nil {

@@ -295,7 +295,7 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
     {
       header: '',
       data: {
-        renderer: optionsButtonRenderer,
+        renderer: canvassSupportersEditButtonRenderer,
         readOnly: true,
         disableVisualSelection: true,
         colWidths: 35,
@@ -1415,6 +1415,10 @@ function setPreviousSortData(field: string, ascending: boolean) {
   EventBus.$emit('activist-show-options-modal', row);
 };
 
+(window as any).redirectEditSupporter = function(row: number) {
+  EventBus.$emit('supporter-redirect-edit', row);
+}
+
 function optionsButtonRenderer(
   instance: any,
   td: HTMLElement,
@@ -1430,6 +1434,26 @@ function optionsButtonRenderer(
     'class="activist-options-btn btn btn-default btn-xs dropdown-toggle glyphicon glyphicon-option-horizontal" ' +
     'type="button" ' +
     'onclick="window.showOptionsModal(' +
+    row +
+    ')"></button>';
+  return td;
+}
+
+function canvassSupportersEditButtonRenderer(
+  instance: any,
+  td: HTMLElement,
+  row: number,
+  col: number,
+  prop: any,
+  value: any,
+  cellProperties: any,
+) {
+  td.innerHTML =
+    '<button ' +
+    'data-role="trigger" ' +
+    'class="activist-options-btn btn btn-default btn-xs glyphicon glyphicon-pencil" ' +
+    'type="button" ' +
+    'onclick="window.redirectEditSupporter(' +
     row +
     ')"></button>';
   return td;
@@ -1540,6 +1564,10 @@ export default Vue.extend({
     },
   },
   methods: {
+    supporterRedirectEdit(row: number) {
+      let supporter = this.activists[row];
+      window.open('/edit_supporter/' + supporter.id, "editsupporter" + supporter.id);
+    },
     showOptionsModal(row: number) {
       var activist = this.activists[row];
       this.showModal('activist-options-modal', activist, row);
@@ -2064,6 +2092,9 @@ export default Vue.extend({
     this.loadActivists();
     EventBus.$on('activist-show-options-modal', (row: number) => {
       this.showOptionsModal(row);
+    });
+    EventBus.$on('supporter-redirect-edit', (row: number) => {
+      this.supporterRedirectEdit(row);
     });
     window.addEventListener('resize', () => {
       this.setHOTHeight();

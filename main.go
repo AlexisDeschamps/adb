@@ -154,6 +154,7 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/list_circles", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListCirclesHandler))
 	router.Handle("/canvass_phone_banking_form", alice.New(main.authOrganizerMiddleware).ThenFunc(main.CanvassPhoneBankingFormHandler))
 	router.Handle("/list_supporters", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListSupportersHandler))
+	router.Handle("/edit_supporter/{supporter_id:[0-9]+}", alice.New(main.authOrganizerMiddleware).ThenFunc(main.EditCanvassSupporterHandler))
 
 	// Authed Admin pages
 	router.Handle("/admin/users", alice.New(main.authAdminMiddleware).ThenFunc(main.ListUsersHandler))
@@ -188,6 +189,7 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/circle/save", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupSaveHandler))
 	router.Handle("/circle/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupListHandler))
 	router.Handle("/circle/delete", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupDeleteHandler))
+	router.Handle("/canvass/supporter/get/{supporter_id:[0-9]+}", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterGetHandler))
 	router.Handle("/canvass/supporter/save", alice.New(main.apiAttendanceAuthMiddleware).ThenFunc(main.CanvassSupporterSaveHandler))
 	router.Handle("/canvass/supporter/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterListHandler))
 
@@ -664,6 +666,28 @@ func sendErrorMessage(w io.Writer, err error) {
 func (c MainController) CanvassPhoneBankingFormHandler(w http.ResponseWriter, r *http.Request) {
 	renderPage(w, r, "canvassing_form", PageData{
 		PageName: "CanvassPhoneBankingForm",
+		Data: map[string]interface{}{
+			"SupporterID": 0,
+		},
+	})
+}
+
+func (c MainController) EditCanvassSupporterHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	var supporterID int
+	if supporterIDStr, ok := vars["supporter_id"]; ok {
+		var err error
+		supporterID, err = strconv.Atoi(supporterIDStr)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	renderPage(w, r, "canvassing_form", PageData{
+		PageName: "EditSupporter",
+		Data: map[string]interface{}{
+			"SupporterID": supporterID,
+		},
 	})
 }
 
@@ -1308,14 +1332,20 @@ func (c MainController) CanvassSupporterSaveHandler(w http.ResponseWriter, r *ht
 		return
 	}
 
-	_, err = model.CreateSupporter(c.db, supporter)
+	isNewSupporter := supporter.ID == 0
+
+	supporterID, err := model.CreateUpdateSupporter(c.db, supporter)
 	if err != nil {
 		sendErrorMessage(w, err)
 		return
 	}
 
 	out := map[string]interface{}{
-		"status": "success",
+		"status":   "success",
+		"redirect": "",
+	}
+	if isNewSupporter {
+		out["redirect"] = fmt.Sprintf("/edit_supporter/%d", supporterID)
 	}
 	writeJSON(w, out)
 }
@@ -1374,6 +1404,26 @@ func (c MainController) ApiUnauthedSaveWebsiteSupporterHandler(w http.ResponseWr
 
 	out := map[string]interface{}{
 		"status": "success",
+	}
+	writeJSON(w, out)
+}
+
+func (c MainController) CanvassSupporterGetHandler(w http.ResponseWriter, r *http.Request) {
+	supporterID, err := strconv.Atoi(mux.Vars(r)["supporter_id"])
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+
+	supporter, err := model.GetSupporter(c.db, model.GetSupporterOptions{ID: supporterID})
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+
+	out := map[string]interface{}{
+		"status":    "success",
+		"supporter": supporter.ToJSON(),
 	}
 	writeJSON(w, out)
 }

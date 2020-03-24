@@ -1,8 +1,10 @@
 <template>
   <div class="address-wrapper">
+    <!-- address 1 input needs to have type "search" to prevent
+         chrome from autofilling addresses -->
     <input
       id="canvassingAddress1"
-      type="text"
+      type="search"
       class="form-control address-input-margin-bottom"
       placeholder="Address 1"
       v-model="address1"
@@ -114,7 +116,6 @@ export default Vue.extend({
             if (compType === "street_number") {
               streetNum = addressComponent.short_name;
             } else if (compType === "route") {
-              console.log(route);
               route = addressComponent.short_name;
             } else if (compType === "locality") {
               this.city = addressComponent.short_name;

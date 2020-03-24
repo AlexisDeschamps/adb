@@ -18,7 +18,7 @@
     <script src="/static/external/bootstrap/js/bootstrap.min.js"></script>
 
     <script src="/dist/flash_message.js"></script>
-    {{if or (eq .PageName "CanvassPhoneBankingForm") (eq .PageName "CanvassingForm")}}
+    {{if or (eq .PageName "CanvassPhoneBankingForm") (eq .PageName "CanvassingForm") (eq .PageName "EditSupporter")}}
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5EFxs1bp1B3nlKMmXeLCnQ8gHk8KKVDI&libraries=places"></script>
     {{end}}
   </head>
