@@ -668,6 +668,7 @@ func (c MainController) CanvassPhoneBankingFormHandler(w http.ResponseWriter, r 
 		PageName: "CanvassPhoneBankingForm",
 		Data: map[string]interface{}{
 			"SupporterID": 0,
+			"NewOnSave":   true,
 		},
 	})
 }
@@ -687,6 +688,7 @@ func (c MainController) EditCanvassSupporterHandler(w http.ResponseWriter, r *ht
 		PageName: "EditSupporter",
 		Data: map[string]interface{}{
 			"SupporterID": supporterID,
+			"NewOnSave":   false,
 		},
 	})
 }

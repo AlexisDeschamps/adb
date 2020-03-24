@@ -238,6 +238,7 @@ export default Vue.extend({
   },
   props: {
     id: String,
+    newOnSave: Boolean,
   },
   data() {
     return {
@@ -303,14 +304,22 @@ export default Vue.extend({
             return;
           }
 
+          if (this.newOnSave) {
+            flashMessage('Saved!', false);
+            this.supporter = emptySupporter();
+            window.scrollTo(0, 0);
+            return;
+          }
+
           if (parsed.redirect) {
             setFlashMessageSuccessCookie("Saved!");
             window.location.href = parsed.redirect;
-          } else {
-            flashMessage('Saved!', false);
-            // Re-fetch supporter from database just in case it's changed.
-            this.updateSupporter();
+            return;  // unreachable
           }
+
+          flashMessage('Saved!', false);
+          // Re-fetch supporter from database just in case it's changed.
+          this.updateSupporter();
         },
         error: () => {
           this.saving = false;
