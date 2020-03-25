@@ -3,104 +3,164 @@
     :title="'Phone Bank Form'">
     <form action id="canvassingForm" autocomplete="off">
       <fieldset :disabled="loading">
-        <label for="firstName">
-          First Name
-        </label>
-        <input id="firstName" class="form-control" v-model="supporter.firstName" /> <br />
-        <label for="lastName">
-          Last Name
-        </label>
-        <input id="lastName" class="form-control" v-model="supporter.lastName" /> <br />
-        <label for="email">
-          Email
-        </label>
-        <input id="email" class="form-control" v-model="supporter.email" /> <br />
-        <label for="phone">
-          Phone
-        </label>
-        <input id="phone" class="form-control" v-model="supporter.phone" /> <br />
 
-        <label>Location</label>
-        <canvassing-address
-          v-on:change="onAddressChange"
-          /> <br />
+        <div class="form-group">
 
-        <label for="source">Source</label>
-        <select id="source" class="form-control" v-model="supporter.source">
-          <option value="phone">Phone Banking</option>
-          <option value="canvass">In Person Canvassing</option>
-          <option value="canvass">House Party</option>
-        </select> <br />
-        <label for="dateSourced">Date Sourced</label>
-        <input id="dateSourced" class="form-control" type="date" v-model="supporter.dateSourced" /> <br />
+          <label for="notes"> Notes </label>
+          <textarea id="notes" type="text" class="form-control" v-model="supporter.notes"
+                    :style="resizeNotesStyle"
+                    @focus="resizeNotes"
+                    ref="notes"
+                    />
 
-        <input type="checkbox" id="voter" v-model="supporter.voter" />
-        <label for="voter"> Eligible Berkeley Voter </label> <br />
+        </div>
+
+        <br />
+        <p>Either email or phone number is required.</p>
+
+        <div class="row">
+          <div class="form-group col-sm-6">
+            <label for="email">
+              Email
+            </label>
+            <input id="email" class="form-control" v-model="supporter.email" placeholder="Email" />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="phone">
+              Phone
+            </label>
+            <input id="phone" class="form-control" v-model="supporter.phone" placeholder="Phone" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-sm-6">
+            <label for="firstName">
+              First Name
+            </label>
+            <input id="firstName" class="form-control" v-model="supporter.firstName" placeholder="First Name" />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="lastName">
+              Last Name
+            </label>
+            <input id="lastName" class="form-control" v-model="supporter.lastName" placeholder="Last Name" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Location</label>
+          <canvassing-address
+            v-on:change="onAddressChange"
+            />
+        </div>
+
+        <div class="form-group">
+          <label for="source">Source</label>
+          <select id="source" class="form-control" v-model="supporter.source">
+            <option value="phone">Phone Banking</option>
+            <option value="canvass">In Person Canvassing</option>
+            <option value="canvass">House Party</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="dateSourced">Date Sourced</label>
+          <input id="dateSourced" class="form-control" type="date" v-model="supporter.dateSourced" />
+        </div>
+        <br />
+
+        <div class="form-group">
+          <input type="checkbox" id="voter" v-model="supporter.voter" />
+          <label for="voter"> Eligible Berkeley Voter </label>
+        </div>
 
         <div>
           <h3> Requests </h3>
-          <input type="checkbox" id="requestedLawnSign" v-model="supporter.requestedLawnSign" />
-          <label for="requestedLawnSign"> Requested Lawn Sign </label> <br />
-          <input type="checkbox" id="requestedPoster" v-model="supporter.requestedPoster" />
-          <label for="requestedPoster"> Requested Poster </label> <br />
-          <br />
+          <div class="form-group">
+            <input type="checkbox" id="requestedLawnSign" v-model="supporter.requestedLawnSign" />
+            <label for="requestedLawnSign"> Requested Lawn Sign </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="requestedPoster" v-model="supporter.requestedPoster" />
+            <label for="requestedPoster"> Requested Poster </label>
+          </div>
         </div>
 
         <div>
           <h3>Issues</h3>
-          <input type="checkbox" id="issueHousing" v-model="supporter.issueHousing" />
-          <label for="issueHousing"> Housing </label> <br />
-          <input type="checkbox" id="issueHomelessness" v-model="supporter.issueHomelessness" />
-          <label for="issueHomelessness"> Homelessness </label> <br />
-          <input type="checkbox" id="issueClimate" v-model="supporter.issueClimate" />
-          <label for="issueClimate"> Climate </label> <br />
-          <input type="checkbox" id="issuePublicSafety" v-model="supporter.issuePublicSafety" />
-          <label for="issuePublicSafety"> Public Safety </label> <br />
-          <input type="checkbox" id="issuePoliceAccountability" v-model="supporter.issuePoliceAccountability" />
-          <label for="issuePoliceAccountability"> Police Accountability </label> <br />
-          <input type="checkbox" id="issueTransit" v-model="supporter.issueTransit" />
-          <label for="issueTransit"> Transit </label> <br />
-          <input type="checkbox" id="issueEconomicEquality" v-model="supporter.issueEconomicEquality" />
-          <label for="issueEconomicEquality"> Economic Equality </label> <br />
-          <input type="checkbox" id="issuePublicHealth" v-model="supporter.issuePublicHealth" />
-          <label for="issuePublicHealth"> Public Health </label> <br />
-          <input type="checkbox" id="issueAnimalRights" v-model="supporter.issueAnimalRights" />
-          <label for="issueAnimalRights"> Animal Rights </label> <br />
-
-          <br />
+          <div class="form-group">
+            <input type="checkbox" id="issueHousing" v-model="supporter.issueHousing" />
+            <label for="issueHousing"> Housing </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issueHomelessness" v-model="supporter.issueHomelessness" />
+            <label for="issueHomelessness"> Homelessness </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issueClimate" v-model="supporter.issueClimate" />
+            <label for="issueClimate"> Climate </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issuePublicSafety" v-model="supporter.issuePublicSafety" />
+            <label for="issuePublicSafety"> Public Safety </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issuePoliceAccountability" v-model="supporter.issuePoliceAccountability" />
+            <label for="issuePoliceAccountability"> Police Accountability </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issueTransit" v-model="supporter.issueTransit" />
+            <label for="issueTransit"> Transit </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issueEconomicEquality" v-model="supporter.issueEconomicEquality" />
+            <label for="issueEconomicEquality">Economic Equality</label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issuePublicHealth" v-model="supporter.issuePublicHealth" />
+            <label for="issuePublicHealth"> Public Health </label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="issueAnimalRights" v-model="supporter.issueAnimalRights" />
+            <label for="issueAnimalRights"> Animal Rights </label>
+          </div>
         </div>
 
         <div>
           <h3>Support</h3>
 
-          <input type="checkbox" id="interestDonate" v-model="supporter.interestDonate" />
-          <label for="interestDonate"> Donating </label> <br />
+          <div class="form-group">
+            <input type="checkbox" id="interestDonate" v-model="supporter.interestDonate" />
+            <label for="interestDonate"> Donating </label>
+          </div>
 
-          <input type="checkbox" id="interestAttendEvent" v-model="supporter.interestAttendEvent" />
-          <label for="interestAttendEvent"> Attend Event </label> <br />
+          <div class="form-group">
+            <input type="checkbox" id="interestAttendEvent" v-model="supporter.interestAttendEvent" />
+            <label for="interestAttendEvent"> Attend Event </label>
+          </div>
 
-          <input type="checkbox" id="interestVolunteer" v-model="supporter.interestVolunteer" />
-          <label for="interestVolunteer"> Volunteer </label> <br />
+          <div class="form-group">
+            <input type="checkbox" id="interestVolunteer" v-model="supporter.interestVolunteer" />
+            <label for="interestVolunteer"> Volunteer </label>
+          </div>
 
-          <input type="checkbox" id="interestHostEvent" v-model="supporter.interestHostEvent" />
-          <label for="interestHostEvent"> Host Event (e.g. house party) </label> <br />
-
-          <br />
+          <div class="form-group">
+            <input type="checkbox" id="interestHostEvent" v-model="supporter.interestHostEvent" />
+            <label for="interestHostEvent"> Host Event (e.g. house party) </label>
+          </div>
         </div>
 
-        <input type="checkbox" id="requiresFollowup" v-model="supporter.requiresFollowup" />
-        <label for="requiresFollowup"> Requires Followup (for something not covered by another option) </label> <br />
-
-        <br />
-        <label for="notes"> Notes </label>
-        <textarea id="notes" type="text" class="form-control" v-model="supporter.notes" /> <br />
+        <div class="form-group">
+          <input type="checkbox" id="requiresFollowup" v-model="supporter.requiresFollowup" />
+          <label for="requiresFollowup"> Requires Followup (for something not covered by another option) </label>
+        </div>
 
         <!--
         <label for="canvasser"> Canvasser </label>
-        <input id="canvasser" type="text" class="form-control" v-model="supporter.canvasser" /> <br />
+        <input id="canvasser" type="text" class="form-control" v-model="supporter.canvasser" />
 
         <label for="canvassLeader"> Canvass Leader </label>
-        <input id="canvassLeader" type="text" class="form-control" v-model="supporter.canvassLeader" /> <br />
+        <input id="canvassLeader" type="text" class="form-control" v-model="supporter.canvassLeader" />
         -->
       </fieldset>
     </form>
@@ -245,6 +305,8 @@ export default Vue.extend({
       loading: false,
       saving: false,
 
+      notesHeight: 'auto',
+
       supporter: emptySupporter(),
     }
   },
@@ -327,11 +389,37 @@ export default Vue.extend({
         },
       })
     },
+    resizeNotes() {
+      this.notesHeight = 'auto';
+      this.$nextTick(() => {
+        let notesEl = this.$refs.notes as HTMLElement;
+        console.log("scrollHeight: ", notesEl.scrollHeight);
+        if (notesEl.scrollHeight >= 54) {
+          this.notesHeight = notesEl.scrollHeight + 'px';
+        }
+      });
+    },
   },
   created() {
     if (Number(this.id) != 0) {
       this.supporter.id = Number(this.id);
       this.updateSupporter();
+    }
+
+    $(window).bind('resize', () => { this.resizeNotes() });
+  },
+  computed: {
+    resizeNotesStyle: function(): Object {
+      return {
+        resize: 'none',
+        height: this.notesHeight,
+        overflow: 'hidden',
+      };
+    },
+  },
+  watch: {
+    'supporter.notes': function() {
+      this.resizeNotes();
     }
   },
 });
