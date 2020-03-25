@@ -308,6 +308,7 @@ export default Vue.extend({
       notesHeight: 'auto',
 
       supporter: emptySupporter(),
+      oldSupporter: emptySupporter(),
     }
   },
   methods: {
@@ -338,7 +339,10 @@ export default Vue.extend({
           }
 
           // data.status === "success"
+          this.supporter = emptySupporter();
+          this.oldSupporter = emptySupporter();
           assignSupporterJSONToSupporter(this.supporter, data.supporter);
+          assignSupporterJSONToSupporter(this.oldSupporter, data.supporter);
         },
         error: () => {
           this.loading = false;
@@ -369,6 +373,7 @@ export default Vue.extend({
           if (this.newOnSave) {
             flashMessage('Saved!', false);
             this.supporter = emptySupporter();
+            this.oldSupporter = emptySupporter();
             window.scrollTo(0, 0);
             return;
           }
@@ -399,12 +404,30 @@ export default Vue.extend({
         }
       });
     },
+    dirty() {
+      return JSON.stringify(this.supporter) != JSON.stringify(this.oldSupporter);
+    },
   },
   created() {
     if (Number(this.id) != 0) {
       this.supporter.id = Number(this.id);
       this.updateSupporter();
     }
+
+    window.addEventListener('beforeunload', (e) => {
+      if (!this.dirty()) {
+        return;
+      }
+
+      console.log("User data looks dirty");
+      console.log("oldSupporter: ", JSON.stringify(this.oldSupporter));
+      console.log("supporter: ", JSON.stringify(this.supporter));
+
+      e.preventDefault();
+      // MDN says returnValue is unused, but still required by Chrome.
+      // https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload
+      e.returnValue = '';
+    });
 
     $(window).bind('resize', () => { this.resizeNotes() });
   },
