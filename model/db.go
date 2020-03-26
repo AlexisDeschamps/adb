@@ -258,9 +258,10 @@ CREATE TABLE supporters (
 
 	db.MustExec(`
 CREATE TABLE supporters_sendy_sync (
-  supporter_id INTEGER PRIMARY KEY,
+  supporter_id INTEGER NOT NULL,
   sendy_list_id VARCHAR(80) NOT NULL,
   email VARCHAR(80) NOT NULL,
+  is_issue_sublist TINYINT(1) NOT NULL DEFAULT '0',
   sync_status INTEGER NOT NULL,
   sync_timestamp DATETIME NOT NULL,
   INDEX (sendy_list_id, email)

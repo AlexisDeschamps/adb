@@ -48,6 +48,16 @@ var (
 	// For sendy sync
 	SendyAPIKey     = mustGetenv("SENDY_API_KEY", "", false)
 	SendyAllADBList = mustGetenv("SENDY_ALL_ADB_LIST", "", false)
+
+	// All subsets of ("Public Health", "Climate", "Housing &
+	// homelessness") excluding emptyset.
+	SendyPublicHealthOnlyList                       = mustGetenv("SENDY_PUBLIC_HEALTH_ONLY_LIST", "", false)
+	SendyPublicHealthClimateList                    = mustGetenv("SENDY_PUBLIC_HEALTH_CLIMATE_LIST", "", false)
+	SendyPublicHealthHousingHomelessnessList        = mustGetenv("SENDY_PUBLIC_HEALTH_HOUSING_HOMELESSNESS_LIST", "", false)
+	SendyPublicHealthClimateHousingHomelessnessList = mustGetenv("SENDY_PUBLIC_HEALTH_CLIMATE_HOUSING_HOMELESSNESS_LIST", "", false)
+	SendyClimateOnlyList                            = mustGetenv("SENDY_CLIMATE_ONLY_LIST", "", false)
+	SendyClimateHousingHomelessnessList             = mustGetenv("SENDY_CLIMATE_HOUSING_HOMELESSNESS_LIST", "", false)
+	SendyHousingHomelessnessOnlyList                = mustGetenv("SENDY_HOUSING_HOMELESSNESS_ONLY_LIST", "", false)
 )
 
 func mustGetenv(key, fallback string, mandatory bool) string {

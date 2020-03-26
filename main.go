@@ -1456,7 +1456,16 @@ func main() {
 
 	// Start sendy sync
 	if config.SendyAPIKey != "" {
-		go sendy_sync.StartSupportersSendySync(db, config.SendyAPIKey, config.SendyAllADBList)
+		go sendy_sync.StartSupportersSendySync(db, config.SendyAPIKey, sendy_sync.SendyLists{
+			AllADB:                                 config.SendyAllADBList,
+			PublicHealthOnly:                       config.SendyPublicHealthOnlyList,
+			PublicHealthClimate:                    config.SendyPublicHealthClimateList,
+			PublicHealthHousingHomelessness:        config.SendyPublicHealthHousingHomelessnessList,
+			PublicHealthClimateHousingHomelessness: config.SendyPublicHealthClimateHousingHomelessnessList,
+			ClimateOnly:                            config.SendyClimateOnlyList,
+			ClimateHousingHomelessness:             config.SendyClimateHousingHomelessnessList,
+			HousingHomelessnessOnly:                config.SendyHousingHomelessnessOnlyList,
+		})
 	}
 
 	// Set up server
