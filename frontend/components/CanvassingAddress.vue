@@ -54,6 +54,13 @@ declare global {
 }
 
 export default Vue.extend({
+  props: {
+    initialAddress1: String,
+    initialAddress2: String,
+    initialCity: String,
+    initialState: String,
+    initialZip: String,
+  },
   data() {
     return {
       /**
@@ -129,7 +136,24 @@ export default Vue.extend({
         this.address1 = streetNum + ' ' + route;
         this.emitChangeEvent();
       }
-    }
+    },
+  },
+  watch: {
+    initialAddress1: function() {
+      this.address1 = this.initialAddress1;
+    },
+    initialAddress2: function() {
+      this.address2 = this.initialAddress2;
+    },
+    initialCity: function() {
+      this.city = this.initialCity;
+    },
+    initialState: function() {
+      this.state = this.initialState;
+    },
+    initialZip: function() {
+      this.zip = this.initialZip;
+    },
   }
 })
 </script>

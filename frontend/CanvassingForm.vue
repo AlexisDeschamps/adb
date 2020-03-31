@@ -52,6 +52,11 @@
           <label>Location</label>
           <canvassing-address
             v-on:change="onAddressChange"
+            :initialAddress1="supporter.locationAddress1"
+            :initialAddress2="supporter.locationAddress2"
+            :initialCity="supporter.locationCity"
+            :initialState="supporter.locationState"
+            :initialZip="supporter.locationZip"
             />
         </div>
 
