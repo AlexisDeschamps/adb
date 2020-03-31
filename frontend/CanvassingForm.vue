@@ -1,6 +1,6 @@
 <template>
   <adb-page
-    :title="'Phone Bank Form'">
+    :title="'Voter Info Form - Phone Banking'">
     <form action id="canvassingForm" autocomplete="off">
       <fieldset :disabled="loading">
 

@@ -152,7 +152,6 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/leaderboard", alice.New(main.authOrganizerMiddleware).ThenFunc(main.LeaderboardHandler))
 	router.Handle("/list_working_groups", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListWorkingGroupsHandler))
 	router.Handle("/list_circles", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListCirclesHandler))
-	router.Handle("/canvass_phone_banking_form", alice.New(main.authOrganizerMiddleware).ThenFunc(main.CanvassPhoneBankingFormHandler))
 	router.Handle("/list_supporters", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListSupportersHandler))
 	router.Handle("/edit_supporter/{supporter_id:[0-9]+}", alice.New(main.authOrganizerMiddleware).ThenFunc(main.EditCanvassSupporterHandler))
 
@@ -165,6 +164,8 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.HandleFunc("/wallboard_mpi", main.newPowerWallboard)                    // new endpoint for arc tv to get mpi
 	router.HandleFunc("/wallboard_chaptermembers", main.newChapterMemberWallboard) // new endpoint for arc tv to get chapter members
 	router.HandleFunc(config.Route2, main.ActivistListHandler)                     // used for connections google sheet
+	router.HandleFunc("/voter_info_form_phone_banking", main.CanvassPhoneBankingFormHandler)
+	router.HandleFunc("/canvass/supporter/save", main.CanvassSupporterSaveHandler)
 	if config.Route3 != "" {
 		router.HandleFunc(config.Route3, main.ApiUnauthedSaveWebsiteSupporterHandler)
 	}
@@ -190,7 +191,6 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/circle/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupListHandler))
 	router.Handle("/circle/delete", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupDeleteHandler))
 	router.Handle("/canvass/supporter/get/{supporter_id:[0-9]+}", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterGetHandler))
-	router.Handle("/canvass/supporter/save", alice.New(main.apiAttendanceAuthMiddleware).ThenFunc(main.CanvassSupporterSaveHandler))
 	router.Handle("/canvass/supporter/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterListHandler))
 
 	// Authed Admin API
