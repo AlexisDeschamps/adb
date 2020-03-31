@@ -403,9 +403,10 @@ FROM supporters s
 		queryArgs = append(queryArgs, options.ID)
 	} else {
 		// get multiple supporters
+		query += ` WHERE NOT s.deleted `
 
 		if options.RestrictToBerkeley {
-			query += ` WHERE
+			query += ` AND
   location_zip IN ('94701', '94702', '94703', '94704', '94705', '94706', '94707', '94708', '94709', '94710', '94712', '94720')
 `
 		}
@@ -475,4 +476,30 @@ func buildSupporterJSONArray(supporters []Supporter) []SupporterJSON {
 		})
 	}
 	return supportersJSON
+}
+
+func DeleteSupporter(db *sqlx.DB, supporterID int) error {
+	if supporterID == 0 {
+		return errors.New("supporterID cannot be 0")
+	}
+	query := `
+UPDATE supporters
+SET
+  deleted = true
+WHERE
+  id = ?
+LIMIT 1 -- id is a primary key, so there should only ever be one, but do this just in case.
+`
+	result, err := db.Exec(query, supporterID)
+	if err != nil {
+		return errors.Wrap(err, "error deleting supporter")
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return errors.Wrap(err, "error getting rowsaffected when deleting supporter")
+	}
+	if rowsAffected == 0 {
+		return errors.Errorf("supporter for id does not exist: %d", supporterID)
+	}
+	return nil
 }

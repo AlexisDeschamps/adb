@@ -141,6 +141,7 @@ FROM
   supporters
 WHERE
   email != ''
+  AND NOT deleted
   AND id NOT IN (
     SELECT
       supporter_id as id

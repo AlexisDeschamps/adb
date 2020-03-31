@@ -249,7 +249,9 @@ CREATE TABLE supporters (
 
   notes TEXT NOT NULL,
 
-  requires_followup TINYINT(1) NOT NULL DEFAULT '0'
+  requires_followup TINYINT(1) NOT NULL DEFAULT '0',
+
+  deleted TINYINT(1) NOT NULL DEFAULT '0'
 
   -- canvasser_user_id INTEGER NOT NULL,
   -- canvass_leader_user_id INTEGER NOT NULL

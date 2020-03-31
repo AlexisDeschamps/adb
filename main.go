@@ -192,6 +192,7 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/circle/delete", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CircleGroupDeleteHandler))
 	router.Handle("/canvass/supporter/get/{supporter_id:[0-9]+}", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterGetHandler))
 	router.Handle("/canvass/supporter/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterListHandler))
+	router.Handle("/canvass/supporter/delete", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.CanvassSupporterDeleteHandler))
 
 	// Authed Admin API
 	router.Handle("/user/list", alice.New(main.apiAdminAuthMiddleware).ThenFunc(main.UserListHandler))
@@ -1367,6 +1368,24 @@ func (c MainController) CanvassSupporterListHandler(w http.ResponseWriter, r *ht
 	writeJSON(w, map[string]interface{}{
 		"status":        "success",
 		"activist_list": supporters,
+	})
+}
+
+func (c MainController) CanvassSupporterDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	supporter, err := model.CleanSupporterData(r.Body)
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+
+	err = model.DeleteSupporter(c.db, supporter.ID)
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+
+	writeJSON(w, map[string]interface{}{
+		"status": "success",
 	})
 }
 

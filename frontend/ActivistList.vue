@@ -105,19 +105,55 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title">{{ currentActivist.name }}</h2>
+            <h2 class="modal-title">{{ currentActivist.first_name }} {{currentActivist.last_name}} {{currentActivist.email}}</h2>
           </div>
           <div class="modal-body">
             <ul class="activist-options-body">
               <!-- <li>
                 <a @click="showModal('connection-modal', currentActivist, activistIndex)">Add Maintenance Connection</a>
               </li> -->
-              <li>
+              <li v-if="canvassSupporters">
+                <a @click="showModal('delete-supporter-modal', currentActivist, activistIndex)">
+                  Delete Supporter
+                </a>
+              </li>
+              <li v-if="!canvassSupporters">
                 <a @click="showModal('merge-activist-modal', currentActivist, activistIndex)"
                   >Merge Activist</a
                 >
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+    </modal>
+    <modal
+      name="delete-supporter-modal"
+      :height="650"
+      classes="no-background-color"
+      @opened="modalOpened"
+      @closed="modalClosed"
+      >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h2 class="modal-title">Delete Supporter</h2></div>
+          <div class="modal-body">
+            <p>Delete this supporter? You can only reverse this operation by asking Samer.</p>
+            <p>Name: {{currentActivist.first_name}} {{currentActivist.last_name}}</p>
+            <p>Email: {{currentActivist.email}}</p>
+            <p>Phone: {{currentActivist.phone}}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="hideModal">Close</button>
+            <button
+              type="button"
+              v-bind:disabled="disableConfirmButton"
+              class="btn btn-danger"
+              @click="confirmDeleteSupporterModal"
+              v-focus
+              >
+              Delete supporter
+            </button>
           </div>
         </div>
       </div>
@@ -294,10 +330,10 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
     {
       header: '',
       data: {
-        renderer: canvassSupportersEditButtonRenderer,
+        renderer: canvassSupportersEditAndOptionsButtonsRenderer,
         readOnly: true,
         disableVisualSelection: true,
-        colWidths: 35,
+        colWidths: 55,
       },
       enabled: true,
     },
@@ -1438,7 +1474,7 @@ function optionsButtonRenderer(
   return td;
 }
 
-function canvassSupportersEditButtonRenderer(
+function canvassSupportersEditAndOptionsButtonsRenderer(
   instance: any,
   td: HTMLElement,
   row: number,
@@ -1454,7 +1490,15 @@ function canvassSupportersEditButtonRenderer(
     'type="button" ' +
     'onclick="window.redirectEditSupporter(' +
     row +
+    ')"></button>' +
+    '<button ' +
+    'data-role="trigger" ' +
+    'class="activist-options-btn btn btn-default btn-xs glyphicon glyphicon-option-horizontal" ' +
+    'type="button" ' +
+    'onclick="window.showOptionsModal(' +
+    row +
     ')"></button>';
+
   return td;
 }
 
@@ -1629,11 +1673,12 @@ export default Vue.extend({
     removeActivist(id: number) {
       var activistIndex;
       for (var i = 0; i < this.allActivists.length; i++) {
+        console.log("activist", this.allActivists)
         if (this.allActivists[i].id === id) {
           activistIndex = i;
         }
       }
-      if (!activistIndex) {
+      if (activistIndex === undefined) {
         throw new Error("Couldn't find activist index for activist with id: " + id);
       }
       this.allActivists = this.allActivists
@@ -1711,6 +1756,36 @@ export default Vue.extend({
 
           // Remove activist from list.
           this.removeActivist(currentActivistID);
+
+          this.hideModal();
+        },
+        error: (err) => {
+          this.disableConfirmButton = false;
+
+          console.warn(err.responseText);
+          flashMessage('Server error: ' + err.responseText, true);
+        },
+      });
+    },
+    confirmDeleteSupporterModal() {
+      this.disableConfirmButton = true;
+      var currentSupporterID = this.currentActivist.id;
+      $.ajax({
+        url: '/canvass/supporter/delete',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id: currentSupporterID }),
+        success: (data) => {
+          this.disableConfirmButton = false;
+
+          var parsed = JSON.parse(data);
+          if (parsed.status === 'error') {
+            flashMessage('Error: ' + parsed.message, true);
+            return;
+          }
+          flashMessage('Supporter was deleted');
+
+          this.removeActivist(currentSupporterID);
 
           this.hideModal();
         },
