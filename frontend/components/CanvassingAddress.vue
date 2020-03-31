@@ -1,6 +1,6 @@
 <template>
   <div class="address-wrapper">
-    <!-- address 1 input needs to have type "search" to prevent
+    <!-- inputs need to have type "search" to prevent
          chrome from autofilling addresses -->
     <input
       id="canvassingAddress1"
@@ -12,7 +12,7 @@
       @keyup="emitChangeEvent"
       />
     <input
-      type="text"
+      type="search"
       class="form-control address-input-margin-bottom"
       placeholder="Address 2"
       v-model="address2"
@@ -20,7 +20,7 @@
       @keyup="emitChangeEvent"
       />
     <input
-      type="text"
+      type="search"
       class="form-control address-input-margin-bottom"
       placeholder="City"
       v-model="city"
@@ -28,7 +28,7 @@
       @keyup="emitChangeEvent"
       />
     <input
-      type="text"
+      type="search"
       class="form-control address-input-margin-bottom"
       placeholder="State"
       v-model="state"
@@ -36,7 +36,7 @@
       @keyup="emitChangeEvent"
       />
     <input
-      type="text"
+      type="search"
       class="form-control"
       placeholder="ZIP code"
       v-model="zip"
