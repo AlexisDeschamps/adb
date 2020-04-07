@@ -92,11 +92,12 @@ type SupporterJSON struct {
 }
 
 type GetSupporterOptions struct {
-	ID                 int    `json:"id"`
-	Order              int    `json:"order"`
-	OrderField         string `json:"order_field"`
-	Filter             string `json:"filter"`
-	RestrictToBerkeley bool   `json:"restrict_to_berkeley"`
+	ID                          int    `json:"id"`
+	Order                       int    `json:"order"`
+	OrderField                  string `json:"order_field"`
+	Filter                      string `json:"filter"`
+	RestrictToBerkeley          bool   `json:"restrict_to_berkeley"`
+	RestrictToVolunteerInterest bool   `json:"restrict_to_volunteer_interest"`
 }
 
 var validSupporterOrderFields = map[string]struct{}{
@@ -416,6 +417,9 @@ FROM supporters s
 			query += ` AND
   location_zip IN ('94701', '94702', '94703', '94704', '94705', '94706', '94707', '94708', '94709', '94710', '94712', '94720')
 `
+		}
+		if options.RestrictToVolunteerInterest {
+			query += ` AND s.interest_volunteer `
 		}
 
 		orderField := options.OrderField

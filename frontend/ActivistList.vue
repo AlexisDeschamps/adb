@@ -26,7 +26,9 @@
       <div v-if="showOptions === 'filters'">
         <div v-if="canvassSupporters">
           <input type="checkbox" id="zipcode-restrict-to-berkeley" v-model="canvassSupportersRestrictToBerkeley" />
-          <label for="zipcode-restrict-to-berkeley">Restrict to Berkeley ZIP Codes</label>
+          <label for="zipcode-restrict-to-berkeley">Restrict to Berkeley ZIP Codes</label> <br />
+          <input type="checkbox" id="restrict-to-volunteer-interest" v-model="canvassSupportersRestrictToVolunteerInterest" />
+          <label for="restrict-to-volunteer-interest">Restrict to Interested in Volunteering</label>
         </div>
         <div v-if="!canvassSupporters">
           <label>Location:</label>
@@ -1911,6 +1913,7 @@ export default Vue.extend({
         order_field: order_field,
         filter: this.view,
         restrict_to_berkeley: this.canvassSupportersRestrictToBerkeley,
+        restrict_to_volunteer_interest: this.canvassSupportersRestrictToVolunteerInterest,
       }
     },
     listActivistsParameters() {
@@ -2142,6 +2145,7 @@ export default Vue.extend({
       loading: false,
       canvassSupporters: canvassSupporters,
       canvassSupportersRestrictToBerkeley: true,
+      canvassSupportersRestrictToVolunteerInterest: false,
       filterId: 0,
     };
   },
@@ -2208,6 +2212,9 @@ export default Vue.extend({
       this.loadActivists();
     },
     canvassSupportersRestrictToBerkeley() {
+      this.loadActivists();
+    },
+    canvassSupportersRestrictToVolunteerInterest() {
       this.loadActivists();
     },
     filterRadius() {
