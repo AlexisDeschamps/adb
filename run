@@ -1,5 +1,5 @@
 #!/bin/sh
 
 cd /opt/adb
-. ./adb-config/env
+. ./adb-wayne-config/env
 exec setuidgid adb ./adb -prod 2>&1
