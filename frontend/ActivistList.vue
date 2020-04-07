@@ -1554,7 +1554,7 @@ function generateBooleanSortFn(field: string, ascending: boolean) {
 
 function generateStringSortFn(field: string, ascending: boolean) {
   return function(a: Activist, b: Activist) {
-    var order = a[field].toLowerCase() < b[field].toLowerCase() ? -1 : 1;
+    var order = ('' + a[field]).toLowerCase() < ('' + b[field]).toLowerCase() ? -1 : 1;
     if (ascending) {
       return order;
     }
