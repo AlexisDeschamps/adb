@@ -49,6 +49,15 @@
         </div>
 
         <div class="form-group">
+          <input type="checkbox" id="isSupporter" v-model="supporter.isSupporter" />
+          <label for="isSupporter"> Is Supporter (e.g. they picked up the phone and want to be included in future communications) </label>
+        </div>
+        <div class="form-group">
+          <input type="checkbox" id="voter" v-model="supporter.voter" />
+          <label for="voter"> Eligible Berkeley Voter </label>
+        </div>
+
+        <div class="form-group">
           <label>Location</label>
           <canvassing-address
             v-on:change="onAddressChange"
@@ -73,11 +82,6 @@
           <input id="dateSourced" class="form-control" type="date" v-model="supporter.dateSourced" />
         </div>
         <br />
-
-        <div class="form-group">
-          <input type="checkbox" id="voter" v-model="supporter.voter" />
-          <label for="voter"> Eligible Berkeley Voter </label>
-        </div>
 
         <div>
           <h3> Requests </h3>

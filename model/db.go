@@ -251,7 +251,14 @@ CREATE TABLE supporters (
 
   requires_followup TINYINT(1) NOT NULL DEFAULT '0',
 
-  deleted TINYINT(1) NOT NULL DEFAULT '0'
+  deleted TINYINT(1) NOT NULL DEFAULT '0',
+
+
+  -- This flag is confusingly named, but it means that the
+  -- person that was canvassed actively wants to be a supporter.
+  -- E.g. you talked to them on the phone and they feel positive
+  -- about the campaign and want to receive updates.
+  is_supporter TINYINT(1) NOT NULL DEFAULT '0'
 
   -- canvasser_user_id INTEGER NOT NULL,
   -- canvass_leader_user_id INTEGER NOT NULL

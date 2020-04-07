@@ -44,6 +44,7 @@ type Supporter struct {
 	Notes string `db:"notes"`
 
 	RequiresFollowup bool `db:"requires_followup"`
+	IsSupporter      bool `db:"is_supporter"`
 
 	// Canvasser string `db:"canvasser"`
 	// CanvassLeader string `db:"canvass_leader"`
@@ -84,6 +85,7 @@ type SupporterJSON struct {
 	Notes string `json:"notes"`
 
 	RequiresFollowup bool `json:"requires_followup"`
+	IsSupporter      bool `json:"is_supporter"`
 
 	// Canvasser string `json:"canvasser"`
 	// CanvassLeader string `json:"canvass_leader"`
@@ -146,6 +148,7 @@ func CleanSupporterData(body io.Reader) (Supporter, error) {
 		InterestHostEvent:         supporterJSON.InterestHostEvent,
 		Notes:                     strings.TrimSpace(supporterJSON.Notes),
 		RequiresFollowup:          supporterJSON.RequiresFollowup,
+		IsSupporter:               supporterJSON.IsSupporter,
 	}
 	return supporter, nil
 }
@@ -196,7 +199,8 @@ SET
   interest_volunteer = :interest_volunteer,
   interest_host_event = :interest_host_event,
   notes = :notes,
-  requires_followup = :requires_followup
+  requires_followup = :requires_followup,
+  is_supporter = :is_supporter
 WHERE
   id = :id`, supporter)
 
@@ -244,7 +248,8 @@ INSERT INTO supporters (
   interest_volunteer,
   interest_host_event,
   notes,
-  requires_followup
+  requires_followup,
+  is_supporter
 ) VALUES (
 
   :first_name,
@@ -275,7 +280,8 @@ INSERT INTO supporters (
   :interest_volunteer,
   :interest_host_event,
   :notes,
-  :requires_followup
+  :requires_followup,
+  :is_supporter
 
 )
 `, supporter)
@@ -391,7 +397,8 @@ SELECT
   interest_volunteer,
   interest_host_event,
   notes,
-  requires_followup
+  requires_followup,
+  is_supporter
 FROM supporters s
 `
 
@@ -473,6 +480,7 @@ func buildSupporterJSONArray(supporters []Supporter) []SupporterJSON {
 			InterestHostEvent:         s.InterestHostEvent,
 			Notes:                     s.Notes,
 			RequiresFollowup:          s.RequiresFollowup,
+			IsSupporter:               s.IsSupporter,
 		})
 	}
 	return supportersJSON

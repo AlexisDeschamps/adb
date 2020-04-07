@@ -696,6 +696,18 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
       },
       enabled: false,
     },
+    {
+      header: 'Is Supporter',
+      longHeader: 'Is Supporter',
+      data: {
+        readOnly: true,
+        type: 'dropdown',
+        source: [true, false],
+        data: 'is_supporter',
+        colWidths: 80,
+      },
+      enabled: false,
+    }
   ];
 }
 
