@@ -25,9 +25,17 @@
 
       <div v-if="showOptions === 'filters'">
         <div v-if="canvassSupporters">
-          <input type="checkbox" id="zipcode-restrict-to-berkeley" v-model="canvassSupportersRestrictToBerkeley" />
+          <input
+            type="checkbox"
+            id="zipcode-restrict-to-berkeley"
+            v-model="canvassSupportersRestrictToBerkeley"
+          />
           <label for="zipcode-restrict-to-berkeley">Restrict to Berkeley ZIP Codes</label> <br />
-          <input type="checkbox" id="restrict-to-volunteer-interest" v-model="canvassSupportersRestrictToVolunteerInterest" />
+          <input
+            type="checkbox"
+            id="restrict-to-volunteer-interest"
+            v-model="canvassSupportersRestrictToVolunteerInterest"
+          />
           <label for="restrict-to-volunteer-interest">Restrict to Interested in Volunteering</label>
         </div>
         <div v-if="!canvassSupporters">
@@ -107,7 +115,10 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title">{{ currentActivist.first_name }} {{currentActivist.last_name}} {{currentActivist.email}}</h2>
+            <h2 class="modal-title">
+              {{ currentActivist.first_name }} {{ currentActivist.last_name }}
+              {{ currentActivist.email }}
+            </h2>
           </div>
           <div class="modal-body">
             <ul class="activist-options-body">
@@ -135,15 +146,15 @@
       classes="no-background-color"
       @opened="modalOpened"
       @closed="modalClosed"
-      >
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header"><h2 class="modal-title">Delete Supporter</h2></div>
           <div class="modal-body">
             <p>Delete this supporter? You can only reverse this operation by asking Samer.</p>
-            <p>Name: {{currentActivist.first_name}} {{currentActivist.last_name}}</p>
-            <p>Email: {{currentActivist.email}}</p>
-            <p>Phone: {{currentActivist.phone}}</p>
+            <p>Name: {{ currentActivist.first_name }} {{ currentActivist.last_name }}</p>
+            <p>Email: {{ currentActivist.email }}</p>
+            <p>Phone: {{ currentActivist.phone }}</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="hideModal">Close</button>
@@ -153,7 +164,7 @@
               class="btn btn-danger"
               @click="confirmDeleteSupporterModal"
               v-focus
-              >
+            >
               Delete supporter
             </button>
           </div>
@@ -709,7 +720,7 @@ function getDefaultCanvassSupportersColumns(view: string): Column[] {
         colWidths: 80,
       },
       enabled: false,
-    }
+    },
   ];
 }
 
@@ -1466,7 +1477,7 @@ function setPreviousSortData(field: string, ascending: boolean) {
 
 (window as any).redirectEditSupporter = function(row: number) {
   EventBus.$emit('supporter-redirect-edit', row);
-}
+};
 
 function optionsButtonRenderer(
   instance: any,
@@ -1623,7 +1634,7 @@ export default Vue.extend({
   methods: {
     supporterRedirectEdit(row: number) {
       let supporter = this.activists[row];
-      window.open('/edit_supporter/' + supporter.id, "editsupporter" + supporter.id);
+      window.open('/edit_supporter/' + supporter.id, 'editsupporter' + supporter.id);
     },
     showOptionsModal(row: number) {
       var activist = this.activists[row];
@@ -1687,7 +1698,7 @@ export default Vue.extend({
     removeActivist(id: number) {
       var activistIndex;
       for (var i = 0; i < this.allActivists.length; i++) {
-        console.log("activist", this.allActivists)
+        console.log('activist', this.allActivists);
         if (this.allActivists[i].id === id) {
           activistIndex = i;
         }
@@ -1815,11 +1826,11 @@ export default Vue.extend({
       this.loading = true;
 
       $.ajax({
-        url: (this.canvassSupporters ? '/canvass/supporter/list' : '/activist/list'),
+        url: this.canvassSupporters ? '/canvass/supporter/list' : '/activist/list',
         method: 'POST',
-        data: (this.canvassSupporters ?
-               JSON.stringify(this.listCanvassSupportersParameters()) :
-               JSON.stringify(this.listActivistsParameters())),
+        data: this.canvassSupporters
+          ? JSON.stringify(this.listCanvassSupportersParameters())
+          : JSON.stringify(this.listActivistsParameters()),
         success: (data) => {
           var parsed = JSON.parse(data);
 
@@ -1914,7 +1925,7 @@ export default Vue.extend({
         filter: this.view,
         restrict_to_berkeley: this.canvassSupportersRestrictToBerkeley,
         restrict_to_volunteer_interest: this.canvassSupportersRestrictToVolunteerInterest,
-      }
+      };
     },
     listActivistsParameters() {
       var order_field = 'last_event';
@@ -2028,18 +2039,18 @@ export default Vue.extend({
         return;
       }
 
-      new Promise<{zipcodes: any, currentFilterId: Number}>((resolve, reject) => {
+      new Promise<{ zipcodes: any; currentFilterId: Number }>((resolve, reject) => {
         let currentFilterId = this.filterId;
 
         if (this.searchLocation.length >= 4) {
           // Lazy-load the zipcodes library because it's huge.
-          import(/* webpackChunkName: "zipcodes" */ 'zipcodes').then(({radius, lookupByName}) => {
-            resolve({zipcodes: {radius, lookupByName}, currentFilterId});
+          import(/* webpackChunkName: "zipcodes" */ 'zipcodes').then(({ radius, lookupByName }) => {
+            resolve({ zipcodes: { radius, lookupByName }, currentFilterId });
           });
         } else {
-          resolve({zipcodes: null, currentFilterId});
+          resolve({ zipcodes: null, currentFilterId });
         }
-      }).then((args: {zipcodes: any, currentFilterId: Number}) => {
+      }).then((args: { zipcodes: any; currentFilterId: Number }) => {
         let zipcodes = args.zipcodes;
         let currentFilterId = args.currentFilterId;
 
@@ -2071,7 +2082,7 @@ export default Vue.extend({
           let name = activist.name;
           if (this.canvassSupporters) {
             if (activist.first_name && activist.last_name) {
-              name = activist.first_name + " " + activist.last_name;
+              name = activist.first_name + ' ' + activist.last_name;
             } else if (activist.first_name) {
               name = activist.first_name;
             } else if (activist.last_name) {
@@ -2085,7 +2096,7 @@ export default Vue.extend({
           if (filterName && filterLoc) {
             if (
               name.toLowerCase().includes(searchNameNormalized) &&
-                zipcodeRange.indexOf(activist.location) !== -1
+              zipcodeRange.indexOf(activist.location) !== -1
             ) {
               activists.push(activist);
             }
@@ -2119,7 +2130,7 @@ export default Vue.extend({
       var initDateTo = '';
     }
     let canvassSupporterViews = {
-      'all_supporters': true,
+      all_supporters: true,
     };
     const canvassSupporters = this.view in canvassSupporterViews;
 
@@ -2132,14 +2143,14 @@ export default Vue.extend({
       allActivists: [] as Activist[],
       filteredActivists: null as (Activist[] | null),
       height: 500,
-      columns: (canvassSupporters ?
-                getDefaultCanvassSupportersColumns(this.view) :
-                getDefaultColumns(this.view)),
+      columns: canvassSupporters
+        ? getDefaultCanvassSupportersColumns(this.view)
+        : getDefaultColumns(this.view),
       lastEventDateFrom: initDateFrom,
       lastEventDateTo: initDateTo,
       filterInterest: 'All',
       filterRadius: '5',
-      showOptions: (canvassSupporters ? 'filters' : ''),
+      showOptions: canvassSupporters ? 'filters' : '',
       search: '',
       searchLocation: '',
       loading: false,

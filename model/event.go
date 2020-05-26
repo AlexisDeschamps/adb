@@ -16,16 +16,10 @@ import (
 const EventDateLayout string = "2006-01-02"
 
 var EventTypes map[string]bool = map[string]bool{
-	"Action":                 true,
-	"Campaign Action":        true,
-	"Circle":                 true,
-	"Community":              true,
-	"Frontline Surveillance": true,
-	"Meeting":                true,
-	"Outreach":               true,
-	"Sanctuary":              true,
-	"Training":               true,
-	"Connection":             true,
+	"Phone Banking":    true,
+	"Field Canvassing": true,
+	"Meeting":          true,
+	"Community":        true,
 }
 
 /** Type Definitions */
@@ -157,10 +151,6 @@ ON (e.id = ea.event_id AND ea.activist_id = a.id)
 	}
 	if options.EventType == "noConnections" {
 		where("e.event_type <> 'Connection'")
-	} else if options.EventType == "mpiDA" {
-		where("e.event_type in ('Outreach', 'Action', 'Campaign Action', 'Sanctuary', 'Frontline Surveillance')")
-	} else if options.EventType == "mpiCOM" {
-		where("e.event_type in ('Community', 'Training', 'Circle')")
 	} else if options.EventType != "" {
 		where("e.event_type like ?", options.EventType)
 	}

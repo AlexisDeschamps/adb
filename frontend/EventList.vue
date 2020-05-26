@@ -32,17 +32,10 @@
         <label for="event-type">Type:</label>
         <select id="event-type" class="form-control filter-margin" v-model="search.type">
           <option value="noConnections">All</option>
-          <option value="Action">Action</option>
-          <option value="Campaign Action">Campaign Action</option>
-          <option value="Circle">Circle</option>
-          <option value="Community">Community</option>
-          <option value="Frontline Surveillance">Frontline Surveillance</option>
+          <option value="Phone Banking">Phone Banking</option>
+          <option value="Field Canvassing">Field Canvassing</option>
           <option value="Meeting">Meeting</option>
-          <option value="Outreach">Outreach</option>
-          <option value="Sanctuary">Sanctuary</option>
-          <option value="Training">Training</option>
-          <option value="mpiDA">MPI: Direct Action</option>
-          <option value="mpiCOM">MPI: Community</option>
+          <option value="Community">Community</option>
         </select>
       </template>
 

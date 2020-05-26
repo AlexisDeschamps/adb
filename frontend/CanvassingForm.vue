@@ -1,18 +1,18 @@
 <template>
-  <adb-page
-    :title="'Voter Info Form - Phone Banking'">
+  <adb-page :title="'Voter Info Form - Phone Banking'">
     <form action id="canvassingForm" autocomplete="off">
       <fieldset :disabled="loading">
-
         <div class="form-group">
-
           <label for="notes"> Notes </label>
-          <textarea id="notes" type="text" class="form-control" v-model="supporter.notes"
-                    :style="resizeNotesStyle"
-                    @focus="resizeNotes"
-                    ref="notes"
-                    />
-
+          <textarea
+            id="notes"
+            type="text"
+            class="form-control"
+            v-model="supporter.notes"
+            :style="resizeNotesStyle"
+            @focus="resizeNotes"
+            ref="notes"
+          />
         </div>
 
         <br />
@@ -38,19 +38,32 @@
             <label for="firstName">
               First Name
             </label>
-            <input id="firstName" class="form-control" v-model="supporter.firstName" placeholder="First Name" />
+            <input
+              id="firstName"
+              class="form-control"
+              v-model="supporter.firstName"
+              placeholder="First Name"
+            />
           </div>
           <div class="form-group col-sm-6">
             <label for="lastName">
               Last Name
             </label>
-            <input id="lastName" class="form-control" v-model="supporter.lastName" placeholder="Last Name" />
+            <input
+              id="lastName"
+              class="form-control"
+              v-model="supporter.lastName"
+              placeholder="Last Name"
+            />
           </div>
         </div>
 
         <div class="form-group">
           <input type="checkbox" id="isSupporter" v-model="supporter.isSupporter" />
-          <label for="isSupporter"> Is Supporter (e.g. they picked up the phone and want to be included in future communications) </label>
+          <label for="isSupporter">
+            Is Supporter (e.g. they picked up the phone and want to be included in future
+            communications)
+          </label>
         </div>
         <div class="form-group">
           <input type="checkbox" id="voter" v-model="supporter.voter" />
@@ -66,7 +79,7 @@
             :initialCity="supporter.locationCity"
             :initialState="supporter.locationState"
             :initialZip="supporter.locationZip"
-            />
+          />
         </div>
 
         <div class="form-group">
@@ -79,12 +92,17 @@
         </div>
         <div class="form-group">
           <label for="dateSourced">Date Sourced</label>
-          <input id="dateSourced" class="form-control" type="date" v-model="supporter.dateSourced" />
+          <input
+            id="dateSourced"
+            class="form-control"
+            type="date"
+            v-model="supporter.dateSourced"
+          />
         </div>
         <br />
 
         <div>
-          <h3> Requests </h3>
+          <h3>Requests</h3>
           <div class="form-group">
             <input type="checkbox" id="requestedLawnSign" v-model="supporter.requestedLawnSign" />
             <label for="requestedLawnSign"> Requested Lawn Sign </label>
@@ -114,7 +132,11 @@
             <label for="issuePublicSafety"> Public Safety </label>
           </div>
           <div class="form-group">
-            <input type="checkbox" id="issuePoliceAccountability" v-model="supporter.issuePoliceAccountability" />
+            <input
+              type="checkbox"
+              id="issuePoliceAccountability"
+              v-model="supporter.issuePoliceAccountability"
+            />
             <label for="issuePoliceAccountability"> Police Accountability </label>
           </div>
           <div class="form-group">
@@ -122,7 +144,11 @@
             <label for="issueTransit"> Transit </label>
           </div>
           <div class="form-group">
-            <input type="checkbox" id="issueEconomicEquality" v-model="supporter.issueEconomicEquality" />
+            <input
+              type="checkbox"
+              id="issueEconomicEquality"
+              v-model="supporter.issueEconomicEquality"
+            />
             <label for="issueEconomicEquality">Economic Equality</label>
           </div>
           <div class="form-group">
@@ -144,7 +170,11 @@
           </div>
 
           <div class="form-group">
-            <input type="checkbox" id="interestAttendEvent" v-model="supporter.interestAttendEvent" />
+            <input
+              type="checkbox"
+              id="interestAttendEvent"
+              v-model="supporter.interestAttendEvent"
+            />
             <label for="interestAttendEvent"> Attend Event </label>
           </div>
 
@@ -161,7 +191,9 @@
 
         <div class="form-group">
           <input type="checkbox" id="requiresFollowup" v-model="supporter.requiresFollowup" />
-          <label for="requiresFollowup"> Requires Followup (for something not covered by another option) </label>
+          <label for="requiresFollowup">
+            Requires Followup (for something not covered by another option)
+          </label>
         </div>
 
         <!--
@@ -179,13 +211,11 @@
         id="submit-button"
         v-on:click="save"
         :disabled="saving"
-        >
+      >
         <span>Save</span>
       </button>
     </center>
   </adb-page>
-
-
 </template>
 
 <script lang="ts">
@@ -241,14 +271,14 @@ function emptySupporter() {
     requiresFollowup: false,
 
     notes: '',
-  }
+  };
 }
 
 function snakeToCamelCase(str: string): string {
   let newStr = '';
   let capitalizeNext = false;
   for (let c of str) {
-    if (c === "_") {
+    if (c === '_') {
       capitalizeNext = true;
       continue;
     }
@@ -266,7 +296,7 @@ function camelCaseToSnake(str: string): string {
   let newStr = '';
   for (let c of str) {
     if (/[A-Z]/.test(c)) {
-      newStr += "_" + c.toLowerCase();
+      newStr += '_' + c.toLowerCase();
     } else {
       newStr += c;
     }
@@ -277,10 +307,10 @@ function camelCaseToSnake(str: string): string {
 function assignSupporterJSONToSupporter(supporter: any, supporterJSON: any) {
   for (let jsonField in supporterJSON) {
     let val = supporterJSON[jsonField];
-    if (jsonField == "date_sourced") {
+    if (jsonField == 'date_sourced') {
       // date from the server looks like 2020-03-15T13:00:00Z, cut off
       // everything before "T" so it fits our dates.
-      val = val.split("T", 1)[0];
+      val = val.split('T', 1)[0];
     }
     supporter[snakeToCamelCase(jsonField)] = val;
   }
@@ -290,15 +320,13 @@ function supporterToJSON(supporter: any): string {
   let ret: any = {};
   for (let field in supporter) {
     let val = supporter[field];
-    if ((typeof val) === "string") {
+    if (typeof val === 'string') {
       val = val.trim();
     }
     ret[camelCaseToSnake(field)] = val;
   }
   return JSON.stringify(ret);
 }
-
-
 
 export default Vue.extend({
   components: {
@@ -318,7 +346,7 @@ export default Vue.extend({
 
       supporter: emptySupporter(),
       oldSupporter: emptySupporter(),
-    }
+    };
   },
   methods: {
     // TODO: use correct type for 'e'
@@ -342,8 +370,8 @@ export default Vue.extend({
         dataType: 'json',
         success: (data) => {
           this.loading = false;
-          if (data.status === "error" ){
-            flashMessage("Error : " + data.message, true);
+          if (data.status === 'error') {
+            flashMessage('Error : ' + data.message, true);
             return;
           }
 
@@ -355,14 +383,14 @@ export default Vue.extend({
         },
         error: () => {
           this.loading = false;
-          flashMessage("Server error, could not get data.", true);
-        }
+          flashMessage('Server error, could not get data.', true);
+        },
       });
     },
 
     save() {
       if (this.supporter.phone.trim() === '' && this.supporter.email.trim() === '') {
-        flashMessage("Error: At least one of phone or email must be set.", true);
+        flashMessage('Error: At least one of phone or email must be set.', true);
         return;
       }
       this.saving = true;
@@ -388,9 +416,9 @@ export default Vue.extend({
           }
 
           if (parsed.redirect) {
-            setFlashMessageSuccessCookie("Saved!");
+            setFlashMessageSuccessCookie('Saved!');
             window.location.href = parsed.redirect;
-            return;  // unreachable
+            return; // unreachable
           }
 
           flashMessage('Saved!', false);
@@ -399,15 +427,15 @@ export default Vue.extend({
         },
         error: () => {
           this.saving = false;
-          flashMessage("Server error, did not save data.", true);
+          flashMessage('Server error, did not save data.', true);
         },
-      })
+      });
     },
     resizeNotes() {
       this.notesHeight = 'auto';
       this.$nextTick(() => {
         let notesEl = this.$refs.notes as HTMLElement;
-        console.log("scrollHeight: ", notesEl.scrollHeight);
+        console.log('scrollHeight: ', notesEl.scrollHeight);
         if (notesEl.scrollHeight >= 54) {
           this.notesHeight = notesEl.scrollHeight + 'px';
         }
@@ -428,9 +456,9 @@ export default Vue.extend({
         return;
       }
 
-      console.log("User data looks dirty");
-      console.log("oldSupporter: ", JSON.stringify(this.oldSupporter));
-      console.log("supporter: ", JSON.stringify(this.supporter));
+      console.log('User data looks dirty');
+      console.log('oldSupporter: ', JSON.stringify(this.oldSupporter));
+      console.log('supporter: ', JSON.stringify(this.supporter));
 
       e.preventDefault();
       // MDN says returnValue is unused, but still required by Chrome.
@@ -438,7 +466,9 @@ export default Vue.extend({
       e.returnValue = '';
     });
 
-    $(window).bind('resize', () => { this.resizeNotes() });
+    $(window).bind('resize', () => {
+      this.resizeNotes();
+    });
   },
   computed: {
     resizeNotesStyle: function(): Object {
@@ -452,8 +482,7 @@ export default Vue.extend({
   watch: {
     'supporter.notes': function() {
       this.resizeNotes();
-    }
+    },
   },
 });
-
 </script>
