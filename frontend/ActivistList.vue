@@ -765,6 +765,7 @@ function getDefaultColumns(view: string): Column[] {
         colWidths: 100,
       },
       enabled:
+        view === 'all_activists' ||
         view === 'organizer_prospects' ||
         view === 'development' ||
         view === 'circle_member_prospects' ||
@@ -789,7 +790,7 @@ function getDefaultColumns(view: string): Column[] {
         readOnly: true,
         colWidths: 50,
       },
-      enabled: view === 'leaderboard' || view === 'action_team',
+      enabled: view === 'all_activists' || view === 'leaderboard' || view === 'action_team',
     },
     {
       header: 'Email',
@@ -1100,6 +1101,7 @@ function getDefaultColumns(view: string): Column[] {
         colWidths: 200,
       },
       enabled:
+        view === 'all_activists' ||
         view === 'activist_pool' ||
         view === 'activist_recruitment' ||
         view === 'leaderboard' ||
@@ -1114,7 +1116,11 @@ function getDefaultColumns(view: string): Column[] {
         readOnly: true,
         colWidths: 200,
       },
-      enabled: view === 'activist_recruitment' || view === 'leaderboard' || view === 'study',
+      enabled:
+        view === 'all_activists' ||
+        view === 'activist_recruitment' ||
+        view === 'leaderboard' ||
+        view === 'study',
     },
     // {
     //   header: 'Last Circle',
@@ -1138,7 +1144,11 @@ function getDefaultColumns(view: string): Column[] {
         readOnly: true,
         colWidths: 90,
       },
-      enabled: view === 'leaderboard' || view === 'community_prospects' || view === 'study',
+      enabled:
+        view === 'all_activists' ||
+        view === 'leaderboard' ||
+        view === 'community_prospects' ||
+        view === 'study',
     },
 
     // {
