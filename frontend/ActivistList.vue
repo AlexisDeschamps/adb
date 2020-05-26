@@ -1424,6 +1424,77 @@ function getDefaultColumns(view: string): Column[] {
     //   },
     //   enabled: false,
     // },
+
+    {
+      header: 'Mon',
+      longHeader: 'Committed: Monday',
+      data: {
+        type: 'checkbox',
+        data: 'commit_monday',
+        colWidths: 30,
+      },
+      enabled: view === 'all_activists',
+    },
+    {
+      header: 'Tue',
+      longHeader: 'Committed: Tuesday',
+      data: {
+        type: 'checkbox',
+        data: 'commit_tuesday',
+        colWidths: 30,
+      },
+      enabled: view === 'all_activists',
+    },
+    {
+      header: 'Wed',
+      longHeader: 'Committed: Wednesday',
+      data: {
+        type: 'checkbox',
+        data: 'commit_wednesday',
+        colWidths: 30,
+      },
+      enabled: view === 'all_activists',
+    },
+    {
+      header: 'Thu',
+      longHeader: 'Committed: Thursday',
+      data: {
+        type: 'checkbox',
+        data: 'commit_thursday',
+        colWidths: 30,
+      },
+      enabled: view === 'all_activists',
+    },
+    {
+      header: 'Fri',
+      longHeader: 'Committed: Friday',
+      data: {
+        type: 'checkbox',
+        data: 'commit_friday',
+        colWidths: 30,
+      },
+      enabled: view === 'all_activists',
+    },
+    {
+      header: 'Sat',
+      longHeader: 'Committed: Saturday',
+      data: {
+        type: 'checkbox',
+        data: 'commit_saturday',
+        colWidths: 30,
+      },
+      enabled: view === 'all_activists',
+    },
+    {
+      header: 'Sun',
+      longHeader: 'Committed: Sunday',
+      data: {
+        type: 'checkbox',
+        data: 'commit_sunday',
+        colWidths: 30,
+      },
+      enabled: view === 'all_activists',
+    },
   ];
 }
 

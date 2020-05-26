@@ -161,7 +161,15 @@ SELECT
     mpi,
     notes,
     vision_wall,
-    mpp_requirements
+    mpp_requirements,
+
+    commit_monday,
+    commit_tuesday,
+    commit_wednesday,
+    commit_thursday,
+    commit_friday,
+    commit_saturday,
+    commit_sunday
 
 FROM activists a
 
@@ -240,7 +248,15 @@ SET
   interest_date = :interest_date,
   mpi = :mpi,
   notes = :notes,
-  vision_wall = :vision_wall
+  vision_wall = :vision_wall,
+
+  commit_monday = :commit_monday,
+  commit_tuesday = :commit_tuesday,
+  commit_wednesday = :commit_wednesday,
+  commit_thursday = :commit_thursday,
+  commit_friday = :commit_friday,
+  commit_saturday = :commit_saturday,
+  commit_sunday = :commit_sunday
 
 WHERE
   id = :id`
@@ -317,11 +333,22 @@ type ActivistConnectionData struct {
 	MPPRequirements       string         `db:"mpp_requirements"`
 }
 
+type ActivistCampaignData struct {
+	CommitMonday    bool `db:"commit_monday"`
+	CommitTuesday   bool `db:"commit_tuesday"`
+	CommitWednesday bool `db:"commit_wednesday"`
+	CommitThursday  bool `db:"commit_thursday"`
+	CommitFriday    bool `db:"commit_friday"`
+	CommitSaturday  bool `db:"commit_saturday"`
+	CommitSunday    bool `db:"commit_sunday"`
+}
+
 type ActivistExtra struct {
 	Activist
 	ActivistEventData
 	ActivistMembershipData
 	ActivistConnectionData
+	ActivistCampaignData
 }
 
 type ActivistJSON struct {
@@ -382,6 +409,14 @@ type ActivistJSON struct {
 	Notes                 string `json:"notes"`
 	VisionWall            string `json:"vision_wall"`
 	MPPRequirements       string `json:"mpp_requirements"`
+
+	CommitMonday    bool `json:"commit_monday"`
+	CommitTuesday   bool `json:"commit_tuesday"`
+	CommitWednesday bool `json:"commit_wednesday"`
+	CommitThursday  bool `json:"commit_thursday"`
+	CommitFriday    bool `json:"commit_friday"`
+	CommitSaturday  bool `json:"commit_saturday"`
+	CommitSunday    bool `json:"commit_sunday"`
 }
 
 type GetActivistOptions struct {
@@ -600,6 +635,14 @@ func buildActivistJSONArray(activists []ActivistExtra) []ActivistJSON {
 			Notes:                 notes,
 			VisionWall:            a.VisionWall,
 			MPPRequirements:       a.MPPRequirements,
+
+			CommitMonday:    a.CommitMonday,
+			CommitTuesday:   a.CommitTuesday,
+			CommitWednesday: a.CommitWednesday,
+			CommitThursday:  a.CommitThursday,
+			CommitFriday:    a.CommitFriday,
+			CommitSaturday:  a.CommitSaturday,
+			CommitSunday:    a.CommitSunday,
 		})
 	}
 
@@ -949,7 +992,16 @@ INSERT INTO activists (
   interest_date,
   mpi,
   notes,
-  vision_wall
+  vision_wall,
+
+  commit_monday,
+  commit_tuesday,
+  commit_wednesday,
+  commit_thursday,
+  commit_friday,
+  commit_saturday,
+  commit_sunday
+
 
 ) VALUES (
 
@@ -992,6 +1044,15 @@ INSERT INTO activists (
   :mpi,
   :notes,
   :vision_wall,
+
+  :commit_monday,
+  :commit_tuesday,
+  :commit_wednesday,
+  :commit_thursday,
+  :commit_friday,
+  :commit_saturday,
+  :commit_sunday
+
 
 )`, activist)
 	if err != nil {
@@ -1052,8 +1113,16 @@ SET
   interest_date = :interest_date,
   mpi = :mpi,
   notes = :notes,
-  vision_wall = :vision_wall
-  
+  vision_wall = :vision_wall,
+
+  commit_monday = :commit_monday,
+  commit_tuesday = :commit_tuesday,
+  commit_wednesday = :commit_wednesday,
+  commit_thursday = :commit_thursday,
+  commit_friday = :commit_friday,
+  commit_saturday = :commit_saturday,
+  commit_sunday = :commit_sunday
+
 WHERE
   id = :id`, activist)
 
@@ -1586,6 +1655,15 @@ func CleanActivistData(body io.Reader) (ActivistExtra, error) {
 			Notes:                 sql.NullString{String: strings.TrimSpace(activistJSON.Notes), Valid: validNotes},
 			VisionWall:            strings.TrimSpace(activistJSON.VisionWall),
 			MPPRequirements:       strings.TrimSpace(activistJSON.MPPRequirements),
+		},
+		ActivistCampaignData: ActivistCampaignData{
+			CommitMonday:    activistJSON.CommitMonday,
+			CommitTuesday:   activistJSON.CommitTuesday,
+			CommitWednesday: activistJSON.CommitWednesday,
+			CommitThursday:  activistJSON.CommitThursday,
+			CommitFriday:    activistJSON.CommitFriday,
+			CommitSaturday:  activistJSON.CommitSaturday,
+			CommitSunday:    activistJSON.CommitSunday,
 		},
 	}
 

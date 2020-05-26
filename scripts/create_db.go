@@ -61,20 +61,20 @@ func createDevDB(name string) {
 INSERT INTO activists
   (id, name, email, phone, location, activist_level)
   VALUES
-  (1, 'Adam Kol', 'test@directactioneverywhere.com', '7035558484', 'Berkeley, United States', 'Supporter'),
-  (2, 'Robin Houseman', 'testtest@gmail.com', '7035558484', 'United States', 'Supporter'),
-  (3, 'aaa', 'test@comcast.net', '7035558484', 'Fairfield, United States', 'Supporter'),
-  (4, 'bbb', '', '7035558484', 'Fairfield, United States', 'Supporter'),
-  (5, 'ccc', 'test@comcast.net', '7035558484', 'Fairfield, United States', 'Supporter'),
-  (100, 'ddd', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (101, 'eee', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (102, 'fff', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (103, 'ggg', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (104, 'hhh', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (105, 'iii', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (106, 'jjj', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (107, 'lll', 'test.test.test@gmail.com', '', 'United States', 'Supporter'),
-  (108, 'mmm', 'test@gmail.com', '', 'United States', 'Supporter');
+  (1, 'Adam Kol', 'test@directactioneverywhere.com', '7035558484', 'Berkeley, United States', 'Team Member'),
+  (2, 'Robin Houseman', 'testtest@gmail.com', '7035558484', 'United States', 'Team Member'),
+  (3, 'aaa', 'test@comcast.net', '7035558484', 'Fairfield, United States', 'Team Member'),
+  (4, 'bbb', '', '7035558484', 'Fairfield, United States', 'Team Member'),
+  (5, 'ccc', 'test@comcast.net', '7035558484', 'Fairfield, United States', 'Team Member'),
+  (100, 'ddd', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (101, 'eee', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (102, 'fff', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (103, 'ggg', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (104, 'hhh', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (105, 'iii', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (106, 'jjj', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (107, 'lll', 'test.test.test@gmail.com', '', 'United States', 'Team Member'),
+  (108, 'mmm', 'test@gmail.com', '', 'United States', 'Team Member');
 
 INSERT INTO events VALUES
   %s

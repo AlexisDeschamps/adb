@@ -93,6 +93,15 @@ CREATE TABLE activists (
   study_activator varchar(40) NOT NULL DEFAULT '',
   study_conversation varchar(20),
   survey_completion VARCHAR(20),
+
+  commit_monday tinyint(1) NOT NULL DEFAULT '0',
+  commit_tuesday tinyint(1) NOT NULL DEFAULT '0',
+  commit_wednesday tinyint(1) NOT NULL DEFAULT '0',
+  commit_thursday tinyint(1) NOT NULL DEFAULT '0',
+  commit_friday tinyint(1) NOT NULL DEFAULT '0',
+  commit_saturday tinyint(1) NOT NULL DEFAULT '0',
+  commit_sunday tinyint(1) NOT NULL DEFAULT '0',
+
   UNIQUE (name)
 )
 `)
