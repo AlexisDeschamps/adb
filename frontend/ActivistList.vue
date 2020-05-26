@@ -771,15 +771,15 @@ function getDefaultColumns(view: string): Column[] {
         view === 'chapter_member_development' ||
         view === 'chapter_member_prospects',
     },
-    {
-      header: 'Managing',
-      longHeader: 'Managing',
-      data: {
-        data: 'dev_manager',
-        colWidths: 100,
-      },
-      enabled: view === 'organizer_prospects' || view === 'senior_organizer_prospects',
-    },
+    // {
+    //   header: 'Managing',
+    //   longHeader: 'Managing',
+    //   data: {
+    //     data: 'dev_manager',
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'organizer_prospects' || view === 'senior_organizer_prospects',
+    // },
     {
       header: 'Points',
       longHeader: 'Leaderboard Points',
@@ -837,18 +837,18 @@ function getDefaultColumns(view: string): Column[] {
         view === 'chapter_member_prospects' ||
         view === 'chapter_member_development',
     },
-    {
-      header: 'Birthday',
-      longHeader: 'Birthday',
-      data: {
-        data: 'dob',
-        colWidths: 100,
-        type: 'date',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-      },
-      enabled: view === 'all_activists',
-    },
+    // {
+    //   header: 'Birthday',
+    //   longHeader: 'Birthday',
+    //   data: {
+    //     data: 'dob',
+    //     colWidths: 100,
+    //     type: 'date',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //   },
+    //   enabled: view === 'all_activists',
+    // },
     {
       header: 'Location',
       longHeader: 'Location',
@@ -927,14 +927,7 @@ function getDefaultColumns(view: string): Column[] {
         data: 'activist_level',
         colWidths: 140,
         type: 'dropdown',
-        source: [
-          'Supporter',
-          'Circle Member',
-          'Chapter Member',
-          'Organizer',
-          'Senior Organizer',
-          'Non-Local',
-        ],
+        source: ['Team Member', 'Staff Member', 'Core Staff Member'],
       },
       enabled:
         view === 'all_activists' ||
@@ -959,124 +952,124 @@ function getDefaultColumns(view: string): Column[] {
       enabled: view === 'community_prospects',
     },
 
-    {
-      header: 'Interest Date',
-      longHeader: 'Date Interest Form Submitted',
-      data: {
-        type: 'date',
-        data: 'interest_date',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-        readOnly: true,
-      },
-      enabled: view === 'circle_member_prospects' || view === 'community_prospects',
-    },
+    // {
+    //   header: 'Interest Date',
+    //   longHeader: 'Date Interest Form Submitted',
+    //   data: {
+    //     type: 'date',
+    //     data: 'interest_date',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //     readOnly: true,
+    //   },
+    //   enabled: view === 'circle_member_prospects' || view === 'community_prospects',
+    // },
 
-    {
-      header: 'Circle Interest',
-      longHeader: 'Circle Interest',
-      data: {
-        type: 'dropdown',
-        source: [true, false],
-        data: 'circle_interest',
-        colWidths: 80,
-      },
-      enabled: view === 'circle_member_prospects',
-    },
+    // {
+    //   header: 'Circle Interest',
+    //   longHeader: 'Circle Interest',
+    //   data: {
+    //     type: 'dropdown',
+    //     source: [true, false],
+    //     data: 'circle_interest',
+    //     colWidths: 80,
+    //   },
+    //   enabled: view === 'circle_member_prospects',
+    // },
 
-    {
-      header: 'Applied',
-      longHeader: 'Application Date',
-      data: {
-        type: 'date',
-        data: 'dev_application_date',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-        readOnly: true,
-      },
-      enabled:
-        view === 'chapter_member_prospects' ||
-        view === 'organizer_prospects' ||
-        view === 'senior_organizer_prospects',
-    },
+    // {
+    //   header: 'Applied',
+    //   longHeader: 'Application Date',
+    //   data: {
+    //     type: 'date',
+    //     data: 'dev_application_date',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //     readOnly: true,
+    //   },
+    //   enabled:
+    //     view === 'chapter_member_prospects' ||
+    //     view === 'organizer_prospects' ||
+    //     view === 'senior_organizer_prospects',
+    // },
 
-    {
-      header: 'Application',
-      longHeader: 'Application Type',
-      data: {
-        data: 'dev_application_type',
-        colWidths: 80,
-        readOnly: true,
-      },
-      enabled:
-        view === 'chapter_member_prospects' ||
-        view === 'organizer_prospects' ||
-        view === 'senior_organizer_prospects',
-    },
+    // {
+    //   header: 'Application',
+    //   longHeader: 'Application Type',
+    //   data: {
+    //     data: 'dev_application_type',
+    //     colWidths: 80,
+    //     readOnly: true,
+    //   },
+    //   enabled:
+    //     view === 'chapter_member_prospects' ||
+    //     view === 'organizer_prospects' ||
+    //     view === 'senior_organizer_prospects',
+    // },
 
-    {
-      header: 'Prsp. Ch. Mem.',
-      longHeader: 'Prospective Chapter Member',
-      data: {
-        type: 'dropdown',
-        source: [true, false],
-        data: 'prospect_chapter_member',
-        colWidths: 60,
-      },
-      enabled: view === 'chapter_member_prospects',
-    },
+    // {
+    //   header: 'Prsp. Ch. Mem.',
+    //   longHeader: 'Prospective Chapter Member',
+    //   data: {
+    //     type: 'dropdown',
+    //     source: [true, false],
+    //     data: 'prospect_chapter_member',
+    //     colWidths: 60,
+    //   },
+    //   enabled: view === 'chapter_member_prospects',
+    // },
 
-    {
-      header: 'Prsp. Organizer',
-      longHeader: 'Prospective Organizer',
-      data: {
-        type: 'dropdown',
-        source: [true, false],
-        data: 'prospect_organizer',
-        colWidths: 100,
-      },
-      enabled: view === 'organizer_prospects',
-    },
+    // {
+    //   header: 'Prsp. Organizer',
+    //   longHeader: 'Prospective Organizer',
+    //   data: {
+    //     type: 'dropdown',
+    //     source: [true, false],
+    //     data: 'prospect_organizer',
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'organizer_prospects',
+    // },
 
-    {
-      header: 'Prsp. Sen. Org.',
-      longHeader: 'Prospective Senior Organizer',
-      data: {
-        type: 'dropdown',
-        source: [true, false],
-        data: 'prospect_senior_organizer',
-        colWidths: 100,
-      },
-      enabled: view === 'senior_organizer_prospects' || view === 'development',
-    },
+    // {
+    //   header: 'Prsp. Sen. Org.',
+    //   longHeader: 'Prospective Senior Organizer',
+    //   data: {
+    //     type: 'dropdown',
+    //     source: [true, false],
+    //     data: 'prospect_senior_organizer',
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'senior_organizer_prospects' || view === 'development',
+    // },
 
-    {
-      header: 'Contacted',
-      longHeader: 'Circle Membership: Date Contacted',
-      data: {
-        type: 'date',
-        data: 'cir_first_email',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'circle_member_prospects',
-    },
+    // {
+    //   header: 'Contacted',
+    //   longHeader: 'Circle Membership: Date Contacted',
+    //   data: {
+    //     type: 'date',
+    //     data: 'cir_first_email',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'circle_member_prospects',
+    // },
 
-    {
-      header: 'Interests',
-      longHeader: 'Interests',
-      data: {
-        data: 'dev_interest',
-        colWidths: 100,
-      },
-      enabled:
-        view === 'organizer_prospects' ||
-        view === 'circle_member_prospects' ||
-        view === 'community_prospects',
-    },
+    // {
+    //   header: 'Interests',
+    //   longHeader: 'Interests',
+    //   data: {
+    //     data: 'dev_interest',
+    //     colWidths: 100,
+    //   },
+    //   enabled:
+    //     view === 'organizer_prospects' ||
+    //     view === 'circle_member_prospects' ||
+    //     view === 'community_prospects',
+    // },
     {
       header: 'Working Groups',
       longHeader: 'Working Group Membership',
@@ -1087,17 +1080,17 @@ function getDefaultColumns(view: string): Column[] {
       },
       enabled: view === 'action_team' || view === 'organizer_prospects' || view === 'development',
     },
-    {
-      header: 'Circles',
-      longHeader: 'Circle Membership',
-      data: {
-        data: 'circles_list',
-        readOnly: true,
-        colWidths: 200,
-      },
-      enabled:
-        view === 'circle_members' || view === 'organizer_prospects' || view === 'development',
-    },
+    // {
+    //   header: 'Circles',
+    //   longHeader: 'Circle Membership',
+    //   data: {
+    //     data: 'circles_list',
+    //     readOnly: true,
+    //     colWidths: 200,
+    //   },
+    //   enabled:
+    //     view === 'circle_members' || view === 'organizer_prospects' || view === 'development',
+    // },
     {
       header: 'First Event',
       longHeader: 'First Event Attended',
@@ -1123,19 +1116,19 @@ function getDefaultColumns(view: string): Column[] {
       },
       enabled: view === 'activist_recruitment' || view === 'leaderboard' || view === 'study',
     },
-    {
-      header: 'Last Circle',
-      longHeader: 'Last Circle Attended',
-      data: {
-        data: 'last_circle',
-        type: 'date',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        readOnly: true,
-        colWidths: 100,
-      },
-      enabled: view === 'circle_members',
-    },
+    // {
+    //   header: 'Last Circle',
+    //   longHeader: 'Last Circle Attended',
+    //   data: {
+    //     data: 'last_circle',
+    //     type: 'date',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     readOnly: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'circle_members',
+    // },
     {
       header: 'Total Events',
       longHeader: 'Total Events Attended',
@@ -1158,269 +1151,269 @@ function getDefaultColumns(view: string): Column[] {
     //   },
     //   enabled: (view === "action_team"),
     // },
-    {
-      header: 'MPI',
-      longHeader: 'MPI Status',
-      data: {
-        type: 'checkbox',
-        data: 'mpi',
-        readOnly: true,
-        colWidths: 30,
-      },
-      enabled:
-        view === 'action_team' ||
-        view === 'activist_pool' ||
-        view === 'activist_recruitment' ||
-        view === 'all_activists' ||
-        view === 'leaderboard' ||
-        view === 'development' ||
-        view === 'chapter_member_prospects' ||
-        view === 'chapter_member_development' ||
-        view === 'organizer_prospects' ||
-        view === 'senior_organizer_development' ||
-        view === 'development',
-    },
+    // {
+    //   header: 'MPI',
+    //   longHeader: 'MPI Status',
+    //   data: {
+    //     type: 'checkbox',
+    //     data: 'mpi',
+    //     readOnly: true,
+    //     colWidths: 30,
+    //   },
+    //   enabled:
+    //     view === 'action_team' ||
+    //     view === 'activist_pool' ||
+    //     view === 'activist_recruitment' ||
+    //     view === 'all_activists' ||
+    //     view === 'leaderboard' ||
+    //     view === 'development' ||
+    //     view === 'chapter_member_prospects' ||
+    //     view === 'chapter_member_development' ||
+    //     view === 'organizer_prospects' ||
+    //     view === 'senior_organizer_development' ||
+    //     view === 'development',
+    // },
 
-    {
-      header: 'MPP Current Month',
-      longHeader: 'MPP Requirements in Current Month',
-      data: {
-        data: 'mpp_requirements',
-        colWidths: 80,
-        readOnly: true,
-      },
-      enabled: view === 'chapter_member_development',
-    },
+    // {
+    //   header: 'MPP Current Month',
+    //   longHeader: 'MPP Requirements in Current Month',
+    //   data: {
+    //     data: 'mpp_requirements',
+    //     colWidths: 80,
+    //     readOnly: true,
+    //   },
+    //   enabled: view === 'chapter_member_development',
+    // },
 
-    {
-      header: 'Connector',
-      longHeader: 'Connector Name',
-      data: {
-        data: 'connector',
-        colWidths: 125,
-      },
-      enabled:
-        view === 'activist_pool' ||
-        view === 'action_team' ||
-        view === 'development' ||
-        view === 'senior_organizer_development',
-    },
-    {
-      header: 'Last Maint. Conn.',
-      longHeader: 'Last Maintenance Connection',
-      data: {
-        type: 'date',
-        data: 'last_connection',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-        readOnly: true,
-      },
-      enabled: view === 'development',
-    },
-    {
-      header: 'Workshop',
-      longHeader: 'Date Attended Training: Workshop',
-      data: {
-        type: 'date',
-        data: 'training0',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled:
-        view === 'action_team' ||
-        view === 'chapter_member_prospects' ||
-        view === 'organizer_prospects',
-    },
-    {
-      header: 'Consent&A-O',
-      longHeader: 'Date Attended Training: Consent & Anti-Opression',
-      data: {
-        type: 'date',
-        data: 'training1',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'development' || view === 'organizer_prospects',
-    },
-    {
-      header: 'Nuts&Bolts',
-      longHeader: 'Date Attended Training: Nuts & Bolts',
-      data: {
-        type: 'date',
-        data: 'training2',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'development' || view === 'organizer_prospects',
-    },
-    {
-      header: 'Talk About AR',
-      longHeader: 'Date Attended Training: How To Talk About Animal Rights',
-      data: {
-        type: 'date',
-        data: 'training3',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'development' || view === 'organizer_prospects',
-    },
-    {
-      header: 'Healthy Cmnty',
-      longHeader: 'Date Attended Training: Healthy Community',
-      data: {
-        type: 'date',
-        data: 'training4',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'development' || view === 'organizer_prospects',
-    },
-    {
-      header: 'Emergent Ldshp',
-      longHeader: 'Date Attended Training: Emergent Leadership',
-      data: {
-        type: 'date',
-        data: 'training5',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'development' || view === 'organizer_prospects',
-    },
-    {
-      header: 'Histry&Vision',
-      longHeader: 'Date Attended Training: History & Vision',
-      data: {
-        type: 'date',
-        data: 'training6',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'development' || view === 'organizer_prospects',
-    },
+    // {
+    //   header: 'Connector',
+    //   longHeader: 'Connector Name',
+    //   data: {
+    //     data: 'connector',
+    //     colWidths: 125,
+    //   },
+    //   enabled:
+    //     view === 'activist_pool' ||
+    //     view === 'action_team' ||
+    //     view === 'development' ||
+    //     view === 'senior_organizer_development',
+    // },
+    // {
+    //   header: 'Last Maint. Conn.',
+    //   longHeader: 'Last Maintenance Connection',
+    //   data: {
+    //     type: 'date',
+    //     data: 'last_connection',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //     readOnly: true,
+    //   },
+    //   enabled: view === 'development',
+    // },
+    // {
+    //   header: 'Workshop',
+    //   longHeader: 'Date Attended Training: Workshop',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training0',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled:
+    //     view === 'action_team' ||
+    //     view === 'chapter_member_prospects' ||
+    //     view === 'organizer_prospects',
+    // },
+    // {
+    //   header: 'Consent&A-O',
+    //   longHeader: 'Date Attended Training: Consent & Anti-Opression',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training1',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'development' || view === 'organizer_prospects',
+    // },
+    // {
+    //   header: 'Nuts&Bolts',
+    //   longHeader: 'Date Attended Training: Nuts & Bolts',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training2',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'development' || view === 'organizer_prospects',
+    // },
+    // {
+    //   header: 'Talk About AR',
+    //   longHeader: 'Date Attended Training: How To Talk About Animal Rights',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training3',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'development' || view === 'organizer_prospects',
+    // },
+    // {
+    //   header: 'Healthy Cmnty',
+    //   longHeader: 'Date Attended Training: Healthy Community',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training4',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'development' || view === 'organizer_prospects',
+    // },
+    // {
+    //   header: 'Emergent Ldshp',
+    //   longHeader: 'Date Attended Training: Emergent Leadership',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training5',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'development' || view === 'organizer_prospects',
+    // },
+    // {
+    //   header: 'Histry&Vision',
+    //   longHeader: 'Date Attended Training: History & Vision',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training6',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'development' || view === 'organizer_prospects',
+    // },
 
-    {
-      header: 'Tier 2',
-      longHeader: 'Date Attended Training: Tier II Protest',
-      data: {
-        type: 'date',
-        data: 'training_protest',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: false,
-    },
+    // {
+    //   header: 'Tier 2',
+    //   longHeader: 'Date Attended Training: Tier II Protest',
+    //   data: {
+    //     type: 'date',
+    //     data: 'training_protest',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: false,
+    // },
 
-    {
-      header: 'Quiz',
-      longHeader: 'Organizer: Quiz',
-      data: {
-        type: 'date',
-        data: 'dev_quiz',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'organizer_prospects' || view === 'development',
-    },
+    // {
+    //   header: 'Quiz',
+    //   longHeader: 'Organizer: Quiz',
+    //   data: {
+    //     type: 'date',
+    //     data: 'dev_quiz',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'organizer_prospects' || view === 'development',
+    // },
 
-    {
-      header: 'First Text',
-      longHeader: 'Chapter Membership: Date First SMS Message Sent',
-      data: {
-        type: 'date',
-        data: 'cm_first_email',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'chapter_member_prospects',
-    },
-    {
-      header: 'Apprv. Email',
-      longHeader: 'Chapter Membership: Date Approval Email Sent',
-      data: {
-        type: 'date',
-        data: 'cm_approval_email',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'chapter_member_prospects',
-    },
-    {
-      header: 'MPI Email',
-      longHeader: 'Chapter Membership: Date MPI Warning Email Sent',
-      data: {
-        type: 'date',
-        data: 'cm_warning_email',
-        dateFormat: 'YYYY-MM-DD',
-        correctFormat: true,
-        colWidths: 100,
-      },
-      enabled: view === 'chapter_member_development',
-    },
+    // {
+    //   header: 'First Text',
+    //   longHeader: 'Chapter Membership: Date First SMS Message Sent',
+    //   data: {
+    //     type: 'date',
+    //     data: 'cm_first_email',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'chapter_member_prospects',
+    // },
+    // {
+    //   header: 'Apprv. Email',
+    //   longHeader: 'Chapter Membership: Date Approval Email Sent',
+    //   data: {
+    //     type: 'date',
+    //     data: 'cm_approval_email',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'chapter_member_prospects',
+    // },
+    // {
+    //   header: 'MPI Email',
+    //   longHeader: 'Chapter Membership: Date MPI Warning Email Sent',
+    //   data: {
+    //     type: 'date',
+    //     data: 'cm_warning_email',
+    //     dateFormat: 'YYYY-MM-DD',
+    //     correctFormat: true,
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'chapter_member_development',
+    // },
 
-    {
-      header: 'Vision Wall',
-      longHeader: 'Chapter Member: Added to Vision Wall',
-      data: {
-        data: 'vision_wall',
-        colWidths: 80,
-        type: 'dropdown',
-        source: ['', 'Yes', 'Declined'],
-      },
-      enabled: view === 'chapter_member_development',
-    },
+    // {
+    //   header: 'Vision Wall',
+    //   longHeader: 'Chapter Member: Added to Vision Wall',
+    //   data: {
+    //     data: 'vision_wall',
+    //     colWidths: 80,
+    //     type: 'dropdown',
+    //     source: ['', 'Yes', 'Declined'],
+    //   },
+    //   enabled: view === 'chapter_member_development',
+    // },
 
-    {
-      header: 'Hiatus',
-      longHeader: 'Hiatus',
-      data: {
-        type: 'checkbox',
-        data: 'hiatus',
-        colWidths: 50,
-      },
-      enabled: view === 'chapter_member_development',
-    },
+    // {
+    //   header: 'Hiatus',
+    //   longHeader: 'Hiatus',
+    //   data: {
+    //     type: 'checkbox',
+    //     data: 'hiatus',
+    //     colWidths: 50,
+    //   },
+    //   enabled: view === 'chapter_member_development',
+    // },
 
-    {
-      header: 'Close Ties',
-      longHeader: 'Referral: Close Ties',
-      data: {
-        data: 'referral_friends',
-        colWidths: 100,
-      },
-      enabled: false,
-    },
+    // {
+    //   header: 'Close Ties',
+    //   longHeader: 'Referral: Close Ties',
+    //   data: {
+    //     data: 'referral_friends',
+    //     colWidths: 100,
+    //   },
+    //   enabled: false,
+    // },
 
-    {
-      header: 'Referral',
-      longHeader: 'Referral: Encouraged to Apply',
-      data: {
-        data: 'referral_apply',
-        colWidths: 100,
-      },
-      enabled: view === 'community_prospects',
-    },
+    // {
+    //   header: 'Referral',
+    //   longHeader: 'Referral: Encouraged to Apply',
+    //   data: {
+    //     data: 'referral_apply',
+    //     colWidths: 100,
+    //   },
+    //   enabled: view === 'community_prospects',
+    // },
 
-    {
-      header: 'Referral Outlet',
-      longHeader: 'Referral: How did you hear about us?',
-      data: {
-        data: 'referral_outlet',
-        colWidths: 100,
-      },
-      enabled: false,
-    },
+    // {
+    //   header: 'Referral Outlet',
+    //   longHeader: 'Referral: How did you hear about us?',
+    //   data: {
+    //     data: 'referral_outlet',
+    //     colWidths: 100,
+    //   },
+    //   enabled: false,
+    // },
   ];
 }
 

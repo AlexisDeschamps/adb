@@ -40,7 +40,7 @@ CREATE TABLE activists (
   phone VARCHAR(20) NOT NULL DEFAULT '',
   location VARCHAR(200) DEFAULT '',
   facebook VARCHAR(200) NOT NULL DEFAULT '',
-  activist_level VARCHAR(40) NOT NULL DEFAULT 'Supporter',
+  activist_level VARCHAR(40) NOT NULL DEFAULT 'Team Member',
   hidden TINYINT(1) NOT NULL DEFAULT '0',
   connector VARCHAR(100) NOT NULL DEFAULT '',
   source VARCHAR(255) NOT NULL DEFAULT '',

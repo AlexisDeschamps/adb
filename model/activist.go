@@ -1227,12 +1227,9 @@ func insertMergedActivistAttendance(tx *sqlx.Tx, originalActivistID int, targetA
 
 func getMergeActivistWinner(original ActivistExtra, target ActivistExtra) ActivistExtra {
 	levels := map[string]int{
-		"Supporter":        0,
-		"Non-Local":        1,
-		"Circle Member":    2,
-		"Chapter Member":   3,
-		"Organizer":        4,
-		"Senior Organizer": 5,
+		"Team Member":       0,
+		"Staff Member":      1,
+		"Core Staff Member": 2,
 	}
 
 	// Check boolean values
@@ -1601,12 +1598,9 @@ func CleanActivistData(body io.Reader) (ActivistExtra, error) {
 }
 
 var validActivistLevels = map[string]struct{}{
-	"Supporter":        struct{}{},
-	"Circle Member":    struct{}{},
-	"Chapter Member":   struct{}{},
-	"Organizer":        struct{}{},
-	"Senior Organizer": struct{}{},
-	"Non-Local":        struct{}{},
+	"Team Member":       struct{}{},
+	"Staff Member":      struct{}{},
+	"Core Staff Member": struct{}{},
 }
 
 func validateActivist(a ActivistExtra) error {
