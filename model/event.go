@@ -471,7 +471,7 @@ func cleanEventAttendanceData(db *sqlx.DB, attendees []string) ([]Activist, erro
 			return []Activist{}, err
 		}
 		cleanAttendee := strings.Title(strings.TrimSpace(attendee))
-		activist, err := GetOrCreateActivist(db, cleanAttendee)
+		_, activist, err := GetOrCreateActivist(db, cleanAttendee)
 		if err != nil {
 			return []Activist{}, err
 		}

@@ -16,6 +16,9 @@
         <span v-if="showOptions !== 'columns'">+</span
         ><span v-if="showOptions === 'columns'">-</span> Columns
       </button>
+      <button v-if="!canvassSupporters" @click="showCreateActivistModal()">
+        Create Activist
+      </button>
 
       <span>&nbsp;&nbsp;&nbsp;&nbsp;<b>Total rows: </b></span>
 
@@ -105,6 +108,41 @@
         :height="height"
       ></HotTable>
     </div>
+    <modal
+      name="create-activist-modal"
+      height="auto"
+      classes="no-background-color"
+      @opened="modalOpened"
+      @closed="modalClosed"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Create Activist</h2>
+          </div>
+          <div class="modal-body">
+            <input
+              id="create-activist-modal-activist-name"
+              class="form-control"
+              type="text"
+              placeholder="Activist Name"
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="hideModal">Close</button>
+            <button
+              type="button"
+              v-bind:disabled="disableConfirmButton"
+              class="btn btn-success"
+              @click="confirmCreateActivistModal"
+              v-focus
+            >
+              Create Activist
+            </button>
+          </div>
+        </div>
+      </div>
+    </modal>
     <modal
       name="activist-options-modal"
       height="auto"
@@ -1717,7 +1755,7 @@ export default Vue.extend({
       var activist = this.activists[row];
       this.showModal('activist-options-modal', activist, row);
     },
-    showModal(modalName: string, activist: Activist, index: number) {
+    showModal(modalName: string, activist?: Activist, index?: number) {
       // Check to see if there's a modal open, and close it if so.
       if (this.currentModalName) {
         this.hideModal();
@@ -1726,7 +1764,9 @@ export default Vue.extend({
       // Show the modal in the next tick so that this code runs after
       // vue has hidden the previous modal.
       Vue.nextTick(() => {
-        this.currentActivist = activist;
+        if (activist) {
+          this.currentActivist = activist;
+        }
 
         if (index != undefined) {
           this.activistIndex = index; // needed for updating activist
@@ -2023,6 +2063,46 @@ export default Vue.extend({
         filter: this.view, // this passes view to the backend, where filtering will now take place
       };
     },
+    showCreateActivistModal() {
+      this.showModal('create-activist-modal');
+    },
+    confirmCreateActivistModal() {
+      var activistName = $('#create-activist-modal-activist-name').val();
+      if (!activistName) {
+        flashMessage('Must enter activist name', true);
+        return;
+      }
+
+      this.disableConfirmButton = true;
+
+      $.ajax({
+        url: '/activist/create',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: activistName,
+        }),
+        success: (data) => {
+          this.disableConfirmButton = false;
+
+          var parsed = JSON.parse(data);
+          if (parsed.status === 'error') {
+            flashMessage('Error: ' + parsed.message, true);
+            return;
+          }
+          flashMessage('Created activist: ' + activistName);
+
+          this.loadActivists();
+          this.hideModal();
+        },
+        error: (err) => {
+          this.disableConfirmButton = false;
+
+          console.warn(err.responseText);
+          flashMessage('Server error: ' + err.responseText, true);
+        },
+      });
+    },
     toggleShowOptions(optionsType: string) {
       if (this.showOptions === optionsType) {
         this.showOptions = '';
@@ -2199,7 +2279,8 @@ export default Vue.extend({
     },
   },
   data() {
-    if (this.view === ('all_activists' || 'leaderboard')) {
+    if (false) {
+      // SAMER: this.view === ('all_activists' || 'leaderboard')) {
       var initDateFrom = initialDateFromValue();
       var initDateTo = initialDateToValue();
     } else {

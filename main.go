@@ -185,6 +185,7 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/activist/save", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.ActivistSaveHandler))
 	router.Handle("/activist/hide", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.ActivistHideHandler))
 	router.Handle("/activist/merge", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.ActivistMergeHandler))
+	router.Handle("/activist/create", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.ActivistCreateHandler))
 	router.Handle("/working_group/save", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.WorkingGroupSaveHandler))
 	router.Handle("/working_group/list", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.WorkingGroupListHandler))
 	router.Handle("/working_group/delete", alice.New(main.apiOrganizerAuthMiddleware).ThenFunc(main.WorkingGroupDeleteHandler))
@@ -802,6 +803,30 @@ func (c MainController) ActivistInfiniteScrollHandler(w http.ResponseWriter, r *
 	})
 }
 
+func (c MainController) ActivistCreateHandler(w http.ResponseWriter, r *http.Request) {
+	var nameJSON struct {
+		Name string `json:"name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&nameJSON); err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+	created, activist, err := model.GetOrCreateActivist(c.db, nameJSON.Name)
+	if err != nil {
+		sendErrorMessage(w, err)
+		return
+	}
+	if !created {
+		sendErrorMessage(w, errors.New("Activist already exists"))
+		return
+	}
+
+	writeJSON(w, map[string]interface{}{
+		"status": "success",
+		"name":   activist.Name,
+	})
+}
+
 func (c MainController) ActivistSaveHandler(w http.ResponseWriter, r *http.Request) {
 	activistExtra, err := model.CleanActivistData(r.Body)
 	if err != nil {
@@ -809,14 +834,7 @@ func (c MainController) ActivistSaveHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// If the activist id is 0, that means they're creating a new
-	// activist.
-	var activistID int
-	if activistExtra.ID == 0 {
-		activistID, err = model.CreateActivist(c.db, activistExtra)
-	} else {
-		activistID, err = model.UpdateActivistData(c.db, activistExtra)
-	}
+	activistID, err := model.UpdateActivistData(c.db, activistExtra)
 	if err != nil {
 		sendErrorMessage(w, err)
 		return

@@ -915,11 +915,16 @@ WHERE
 	return data, nil
 }
 
-func GetOrCreateActivist(db *sqlx.DB, name string) (Activist, error) {
+// Returns (created_bool, activist, error)
+func GetOrCreateActivist(db *sqlx.DB, name string) (bool, Activist, error) {
 	activist, err := GetActivist(db, name)
 	if err == nil {
 		// We got a valid activist, return them.
-		return activist, nil
+		return false, activist, nil
+	}
+
+	if err := checkForDangerousChars(name); err != nil {
+		return false, Activist{}, err
 	}
 
 	// There was an error, so try inserting the activist first.
@@ -929,13 +934,13 @@ func GetOrCreateActivist(db *sqlx.DB, name string) (Activist, error) {
 
 	tx, err := db.Beginx()
 	if err != nil {
-		return Activist{}, errors.Wrap(err, "Failed to create transaction")
+		return false, Activist{}, errors.Wrap(err, "Failed to create transaction")
 	}
 
 	_, err = tx.Exec("INSERT INTO activists (name) VALUES (?)", name)
 	if err != nil {
 		tx.Rollback()
-		return Activist{}, errors.Wrapf(err, "failed to insert activist %s", name)
+		return false, Activist{}, errors.Wrapf(err, "failed to insert activist %s", name)
 	}
 
 	query := selectActivistBaseQuery + " WHERE name = ? "
@@ -945,15 +950,15 @@ func GetOrCreateActivist(db *sqlx.DB, name string) (Activist, error) {
 
 	if err != nil {
 		tx.Rollback()
-		return Activist{}, errors.Wrapf(err, "failed to get new activist %s", name)
+		return false, Activist{}, errors.Wrapf(err, "failed to get new activist %s", name)
 	}
 
 	if err := tx.Commit(); err != nil {
 		tx.Rollback()
-		return Activist{}, errors.Wrapf(err, "failed to commit activist %s", name)
+		return false, Activist{}, errors.Wrapf(err, "failed to commit activist %s", name)
 	}
 
-	return newActivist, nil
+	return true, newActivist, nil
 }
 
 func CreateActivist(db *sqlx.DB, activist ActivistExtra) (int, error) {
