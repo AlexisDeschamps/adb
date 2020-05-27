@@ -137,6 +137,7 @@ func router() (*mux.Router, *sqlx.DB) {
 	router.Handle("/list_events", alice.New(main.authAttendanceMiddleware).ThenFunc(main.ListEventsHandler))
 	router.Handle("/list_connections", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListConnectionsHandler))
 	router.Handle("/list_activists", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListActivistsHandler))
+	router.Handle("/list_activists_committed_days", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListActivistsCommittedDaysHandler))
 	router.Handle("/community_prospects", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListCommunityProspectsHandler))
 	router.Handle("/activist_pool", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListActivistsPoolHandler))
 	router.Handle("/activist_recruitment", alice.New(main.authOrganizerMiddleware).ThenFunc(main.ListActivistsRecruitmentHandler))
@@ -445,8 +446,19 @@ func (c MainController) ListActivistsHandler(w http.ResponseWriter, r *http.Requ
 		PageName: "ActivistList",
 		Data: ActivistListData{
 			Title:       "All Activists",
-			Description: "Everyone who has attended an event within the filtered range",
+			Description: "Everyone who has attended an event within the filtered range.",
 			View:        "all_activists",
+		},
+	})
+}
+
+func (c MainController) ListActivistsCommittedDaysHandler(w http.ResponseWriter, r *http.Request) {
+	renderPage(w, r, "activist_list", PageData{
+		PageName: "ActivistListCommittedDays",
+		Data: ActivistListData{
+			Title:       "Committed Days",
+			Description: "The volunteer days that activists have committed to.",
+			View:        "committed_days",
 		},
 	})
 }

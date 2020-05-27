@@ -180,6 +180,7 @@ LEFT JOIN (
       JOIN events e ON e.id = ea.event_id
       WHERE
         e.date BETWEEN (NOW() - INTERVAL 30 DAY) AND NOW()
+        AND (e.event_type = 'Phone Banking' OR e.event_type = 'Field Canvassing')
       GROUP BY activist_id
 ) points
   ON points.activist_id = a.id
@@ -778,7 +779,19 @@ func GetActivistsExtra(db *sqlx.DB, options GetActivistOptions) ([]ActivistExtra
 			whereClause = append(whereClause, "circle_interest = 1 AND a.id not in (select distinct activist_id from circle_members)")
 		}
 		if options.Filter == "leaderboard" {
-			whereClause = append(whereClause, "a.id in (select distinct activist_id  from event_attendance ea  where ea.event_id in (select id from events e where e.date >= (now() - interval 30 day)))")
+			whereClause = append(whereClause, `
+a.id IN (
+  SELECT DISTINCT activist_id
+  FROM event_attendance ea
+  WHERE
+    ea.event_id IN (
+      SELECT id
+      FROM events e
+      WHERE
+        e.date >= (now() - interval 30 day)
+        AND (e.event_type = 'Phone Banking' OR e.event_type = 'Field Canvassing')
+    )
+)`)
 		}
 
 		if len(whereClause) != 0 {

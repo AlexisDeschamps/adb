@@ -757,21 +757,6 @@ function getDefaultColumns(view: string): Column[] {
       },
       enabled: true,
     },
-    {
-      header: 'Notes',
-      longHeader: 'Notes',
-      data: {
-        data: 'notes',
-        colWidths: 100,
-      },
-      enabled:
-        view === 'all_activists' ||
-        view === 'organizer_prospects' ||
-        view === 'development' ||
-        view === 'circle_member_prospects' ||
-        view === 'chapter_member_development' ||
-        view === 'chapter_member_prospects',
-    },
     // {
     //   header: 'Managing',
     //   longHeader: 'Managing',
@@ -783,14 +768,19 @@ function getDefaultColumns(view: string): Column[] {
     // },
     {
       header: 'Points',
-      longHeader: 'Leaderboard Points',
+      longHeader:
+        'Leaderboard Points (e.g. number of phone banking and field canvassing events attended in the last 30 days)',
       data: {
         type: 'numeric',
         data: 'total_points',
         readOnly: true,
         colWidths: 50,
       },
-      enabled: view === 'all_activists' || view === 'leaderboard' || view === 'action_team',
+      enabled:
+        view === 'all_activists' ||
+        view === 'committed_days' ||
+        view === 'leaderboard' ||
+        view === 'action_team',
     },
     {
       header: 'Email',
@@ -817,6 +807,7 @@ function getDefaultColumns(view: string): Column[] {
       },
       enabled:
         view === 'all_activists' ||
+        view === 'committed_days' ||
         view === 'activist_pool' ||
         view === 'activist_recruitment' ||
         view === 'chapter_member_prospects' ||
@@ -835,6 +826,7 @@ function getDefaultColumns(view: string): Column[] {
       enabled:
         view === 'community_prospects' ||
         view === 'all_activists' ||
+        view === 'committed_days' ||
         view === 'chapter_member_prospects' ||
         view === 'chapter_member_development',
     },
@@ -865,8 +857,7 @@ function getDefaultColumns(view: string): Column[] {
       data: {
         data: 'facebook',
       },
-      enabled:
-        view === 'all_activists' || view === 'activist_recruitment' || view === 'activist_pool',
+      enabled: view === 'activist_recruitment' || view === 'activist_pool',
     },
 
     // {
@@ -1101,7 +1092,6 @@ function getDefaultColumns(view: string): Column[] {
         colWidths: 200,
       },
       enabled:
-        view === 'all_activists' ||
         view === 'activist_pool' ||
         view === 'activist_recruitment' ||
         view === 'leaderboard' ||
@@ -1117,7 +1107,7 @@ function getDefaultColumns(view: string): Column[] {
         colWidths: 200,
       },
       enabled:
-        view === 'all_activists' ||
+        view === 'committed_days' ||
         view === 'activist_recruitment' ||
         view === 'leaderboard' ||
         view === 'study',
@@ -1144,11 +1134,7 @@ function getDefaultColumns(view: string): Column[] {
         readOnly: true,
         colWidths: 90,
       },
-      enabled:
-        view === 'all_activists' ||
-        view === 'leaderboard' ||
-        view === 'community_prospects' ||
-        view === 'study',
+      enabled: view === 'leaderboard' || view === 'community_prospects' || view === 'study',
     },
 
     // {
@@ -1433,7 +1419,7 @@ function getDefaultColumns(view: string): Column[] {
         data: 'commit_monday',
         colWidths: 30,
       },
-      enabled: view === 'all_activists',
+      enabled: view === 'committed_days',
     },
     {
       header: 'Tue',
@@ -1443,7 +1429,7 @@ function getDefaultColumns(view: string): Column[] {
         data: 'commit_tuesday',
         colWidths: 30,
       },
-      enabled: view === 'all_activists',
+      enabled: view === 'committed_days',
     },
     {
       header: 'Wed',
@@ -1453,7 +1439,7 @@ function getDefaultColumns(view: string): Column[] {
         data: 'commit_wednesday',
         colWidths: 30,
       },
-      enabled: view === 'all_activists',
+      enabled: view === 'committed_days',
     },
     {
       header: 'Thu',
@@ -1463,7 +1449,7 @@ function getDefaultColumns(view: string): Column[] {
         data: 'commit_thursday',
         colWidths: 30,
       },
-      enabled: view === 'all_activists',
+      enabled: view === 'committed_days',
     },
     {
       header: 'Fri',
@@ -1473,7 +1459,7 @@ function getDefaultColumns(view: string): Column[] {
         data: 'commit_friday',
         colWidths: 30,
       },
-      enabled: view === 'all_activists',
+      enabled: view === 'committed_days',
     },
     {
       header: 'Sat',
@@ -1483,7 +1469,7 @@ function getDefaultColumns(view: string): Column[] {
         data: 'commit_saturday',
         colWidths: 30,
       },
-      enabled: view === 'all_activists',
+      enabled: view === 'committed_days',
     },
     {
       header: 'Sun',
@@ -1493,7 +1479,24 @@ function getDefaultColumns(view: string): Column[] {
         data: 'commit_sunday',
         colWidths: 30,
       },
-      enabled: view === 'all_activists',
+      enabled: view === 'committed_days',
+    },
+
+    {
+      header: 'Notes',
+      longHeader: 'Notes',
+      data: {
+        data: 'notes',
+        colWidths: 300,
+      },
+      enabled:
+        view === 'all_activists' ||
+        view === 'committed_days' ||
+        view === 'organizer_prospects' ||
+        view === 'development' ||
+        view === 'circle_member_prospects' ||
+        view === 'chapter_member_development' ||
+        view === 'chapter_member_prospects',
     },
   ];
 }
