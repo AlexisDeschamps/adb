@@ -881,8 +881,8 @@ function getDefaultColumns(view: string): Column[] {
     //   enabled: view === 'all_activists',
     // },
     {
-      header: 'Location',
-      longHeader: 'Location',
+      header: 'Address',
+      longHeader: 'Address',
       data: {
         data: 'location',
         colWidths: 100,
